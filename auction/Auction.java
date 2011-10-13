@@ -1,5 +1,8 @@
 package auction;
 
+/**
+ *  An Auction
+*/
 public interface Auction {
     
     /**
