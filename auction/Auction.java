@@ -1,20 +1,21 @@
 package auction;
 
 /**
- *  An Auction
+ *  The Auction interface allows clients to determine what bids are valid, and
+ *  to place bids.
 */
 public interface Auction {
     
     /**
-     *  Gets a range of valid bids for this particular auction.
+     *  Gets a selection of valid bid prices for this auction.
      *
      *  @ensure: getValidBids().contains(i) for all i which is a valid
      *      bid.
     */
-    public Range<Bid> getValidBids();
+    public Selection<Price> getValidPrices();
     
     /**
-     *  Places a bid on this auction.
+     *  Places the bid 'bid' on this auction. After bidding, the
      *
      *  @require: getValidBids().contains(bid)
     */
