@@ -7,7 +7,17 @@ import us.nstro.javaauction.types.selection.Selection;
  *  to place bids.
 */
 public interface Auction {
-    
+
+    /**
+     * Gets the auction information.
+     */
+    public AuctionInfo getInfo();
+
+    /**
+     * Gets the auction status.
+     */
+    public AuctionStatus getStatus();
+
     /**
      *  Gets a selection of valid bid prices for this auction.
      *

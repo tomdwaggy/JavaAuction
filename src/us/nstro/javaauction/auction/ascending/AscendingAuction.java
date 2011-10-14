@@ -4,20 +4,22 @@ import us.nstro.javaauction.types.selection.Selection;
 import us.nstro.javaauction.types.selection.BoundedSelection;
 import us.nstro.javaauction.auction.Price;
 import us.nstro.javaauction.auction.Bid;
-import us.nstro.javaauction.auction.Auction;
+import us.nstro.javaauction.auction.AbstractAuction;
+import us.nstro.javaauction.auction.AuctionInfo;
 
 /**
  *  The AscendingAuction implements an Auction which is a traditional open
  *  ascending auction, like E-Bay.
 */
-public class AscendingAuction implements Auction {
+public class AscendingAuction extends AbstractAuction {
     
-    private Selection validPrices;
+    private Selection<Price> validPrices;
     
     /**
      *  Creates a new Ascending auction with a minimum bid of min.
     */
-    public AscendingAuction(Price min) {
+    public AscendingAuction(AuctionInfo info, Price min) {
+        super(info);
         this.validPrices = new BoundedSelection<Price>(min);
     }
     

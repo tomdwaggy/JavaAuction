@@ -4,7 +4,7 @@ package us.nstro.javaauction.types.selection;
  * A BoundedSelection, which specifies a lower bound and an optional upper
  * bound.
 */
-public class BoundedSelection<Select extends Comparable> implements Selection<Select> {
+public class BoundedSelection<Select extends Comparable<? super Select>> implements Selection<Select> {
     
     private Select min = null;
     private Select max = null;
