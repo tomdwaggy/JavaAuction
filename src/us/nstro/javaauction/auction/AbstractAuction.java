@@ -46,6 +46,8 @@ public abstract class AbstractAuction implements Auction {
     */
     public final void updateValidPrices(Selection<Price> prices) {
         this.validPrices = prices;
+        if(prices.isEmpty())
+            this.closeAuction();
     }
 
     /**
