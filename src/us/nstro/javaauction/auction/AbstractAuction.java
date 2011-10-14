@@ -39,7 +39,7 @@ public abstract class AbstractAuction implements Auction {
     /**
      *  Updates the selection of valid bid prices for this auction.
     */
-    public final void updateValidPrices(Selection<Price> prices) {
+    protected void updateValidPrices(Selection<Price> prices) {
         this.validPrices = prices;
         if(prices.isEmpty())
             this.closeAuction();
@@ -48,7 +48,7 @@ public abstract class AbstractAuction implements Auction {
     /**
      * Sets the current winning bidder.
      */
-    public final void setCurrentWinningBid(Bid bid) {
+    protected void setCurrentWinningBid(Bid bid) {
         this.currentWinningBid = bid;
     }
 
