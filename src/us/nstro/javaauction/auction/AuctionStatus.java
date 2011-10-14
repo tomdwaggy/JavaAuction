@@ -14,7 +14,7 @@ package us.nstro.javaauction.auction;
  */
 public class AuctionStatus {
 
-    private User winner;
+    private Bid win;
     private boolean open;
 
     /**
@@ -41,11 +41,11 @@ public class AuctionStatus {
      * @require: winner != null
      * @ensure: this.isClosed()
      *
-     * @param winner the winner of the auction
+     * @param winner the winning bid
      */
-    public void close(User winner) {
+    public void close(Bid win) {
         this.close();
-        this.winner = winner;
+        this.win = win;
     }
 
     /**
@@ -62,8 +62,8 @@ public class AuctionStatus {
      *
      * @return whether the auction has a winner.
      */
-    public boolean hasWinner() {
-        return this.winner != null;
+    public boolean hasWinningBid() {
+        return this.win != null;
     }
 
     /**
@@ -71,10 +71,10 @@ public class AuctionStatus {
      *
      * @require: this.hasWinner()
      * 
-     * @return the winner of the auction.
+     * @return the bid which won the auction.
      */
-    public User getWinner() {
-        return this.winner;
+    public Bid getWinningBid() {
+        return this.win;
     }
 
 }

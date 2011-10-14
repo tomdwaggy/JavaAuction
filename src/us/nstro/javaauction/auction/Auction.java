@@ -32,5 +32,15 @@ public interface Auction {
      *  @require: getValidBids().contains(bid)
     */
     public void placeBid(Bid bid);
+
+    /**
+     * Closes the auction normally, committing the winning bid.
+     */
+    public void closeAuction();
+
+    /**
+     * Aborts the auction, not committing any current winners.
+     */
+    public void abortAuction();
     
 }

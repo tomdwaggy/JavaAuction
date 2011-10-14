@@ -15,6 +15,13 @@ public class Price implements Comparable<Price> {
     public Price(Integer amount) {
         this.amount = amount;
     }
+
+    /**
+     * Get the next valid price.
+     */
+    public Price next() {
+        return new Price(this.amount + 1);
+    }
     
     /**
      *  Compare a price with another price, returning the highest value.

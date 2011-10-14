@@ -1,11 +1,11 @@
 package us.nstro.javaauction.auction.ascending;
 
 import us.nstro.javaauction.types.selection.Selection;
-import us.nstro.javaauction.types.selection.BoundedSelection;
 import us.nstro.javaauction.auction.Price;
 import us.nstro.javaauction.auction.Bid;
 import us.nstro.javaauction.auction.AbstractAuction;
 import us.nstro.javaauction.auction.AuctionInfo;
+import us.nstro.javaauction.auction.User;
 
 /**
  *  The AscendingAuction implements an Auction which is a traditional open
@@ -20,17 +20,7 @@ public class AscendingAuction extends AbstractAuction {
     */
     public AscendingAuction(AuctionInfo info, Price min) {
         super(info);
-        this.validPrices = new BoundedSelection<Price>(min);
-    }
-    
-    /**
-     *  Gets a selection of valid bid prices for this auction.
-     *
-     *  @ensure: getValidBids().contains(i) for all i which is a valid
-     *      bid.
-    */
-    public Selection<Price> getValidPrices() {
-        return this.validPrices;
+        this.updateValidPrices(new Selection<Price>(min));
     }
     
     /**
@@ -39,7 +29,8 @@ public class AscendingAuction extends AbstractAuction {
      *  @require: getValidBids().contains(bid)
     */
     public void placeBid(Bid bid) {
-        
+        this.setCurrentWinningBid(bid);
+        this.updateValidPrices(new Selection<Price>(bid.getPrice().next()));
     }
     
 }
