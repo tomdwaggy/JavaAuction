@@ -3,8 +3,9 @@ package us.nstro.javaauction.auction;
 import us.nstro.javaauction.types.selection.Selection;
 
 /**
- *  The Auction interface allows clients to determine what bids are valid, and
- *  to place bids.
+ * The Auction interface allows clients to determine what bids are valid, and
+ * to place bids. It also contains AuctionInfo and AuctionStatus which provide
+ * information about the auction in a general case (what is being sold, etc).
 */
 public interface Auction {
 
