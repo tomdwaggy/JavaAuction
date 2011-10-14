@@ -17,10 +17,17 @@ public class Price implements Comparable<Price> {
     }
 
     /**
+     * Get the previous valid price.
+     */
+    public Price prev(Price drop) {
+        return new Price(this.amount - drop.amount);
+    }
+
+    /**
      * Get the next valid price.
      */
-    public Price next() {
-        return new Price(this.amount + 1);
+    public Price next(Price raise) {
+        return new Price(this.amount + raise.amount);
     }
     
     /**

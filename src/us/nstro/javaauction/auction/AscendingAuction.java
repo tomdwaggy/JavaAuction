@@ -25,7 +25,7 @@ public class AscendingAuction extends AbstractAuction {
      */
     public void placeBid(Bid bid) {
         this.setCurrentWinningBid(bid);
-        this.updateValidPrices(new Selection<Price>(bid.getPrice().next()));
+        this.updateValidPrices(new Selection<Price>(bid.getPrice().next(new Price(1))));
     }
     
 }
