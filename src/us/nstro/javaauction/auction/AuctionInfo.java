@@ -5,6 +5,7 @@
 
 package us.nstro.javaauction.auction;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -19,16 +20,16 @@ public class AuctionInfo {
     private UUID auctionID;
     private String name;
     private User auctioneer;
-    private Item product;
+    private List<Item> products;
 
     /**
      * Create a new Auction Information object.
      */
-    public AuctionInfo(UUID id, String name, User auctioneer, Item product) {
+    public AuctionInfo(UUID id, String name, User auctioneer, List<Item> products) {
         this.auctionID = id;
         this.name = name;
         this.auctioneer = auctioneer;
-        this.product = product;
+        this.products = products;
     }
 
     /**
@@ -55,8 +56,8 @@ public class AuctionInfo {
     /**
      * Get the product which is being sold in this auction.
      */
-    public Item getProduct() {
-        return this.product;
+    public List<Item> getProducts() {
+        return this.products;
     }
 
 }
