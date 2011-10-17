@@ -1,15 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package us.nstro.javaauction.auction.builder;
+package us.nstro.javaauction.auction;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
-import us.nstro.javaauction.auction.AuctionInfo;
-import us.nstro.javaauction.auction.User;
+import us.nstro.javaauction.auction.strategy.AuctionStrategy;
 import us.nstro.javaauction.bids.Item;
 
 /**
@@ -17,6 +11,8 @@ import us.nstro.javaauction.bids.Item;
  * @author bbecker
  */
 public class AuctionBuilder {
+
+    private AuctionStrategy strategy;
 
     private UUID auctionID;
     private String name;
@@ -39,8 +35,17 @@ public class AuctionBuilder {
         this.products = Collections.singleton(product);
     }
 
-    public final AuctionInfo createAuctionInfo() {
-        return new AuctionInfo(this.auctionID, this.name, this.auctioneer, this.products);
+    public final void setProducts(Collection<Item> products) {
+        this.products = products;
     }
 
+    public final void setStrategy(AuctionStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public final Auction createAuction() {
+        AuctionInfo info = new AuctionInfo(this.auctionID, this.name, this.auctioneer, this.products);
+        return new Auction(info, this.strategy);
+    }
+    
 }
