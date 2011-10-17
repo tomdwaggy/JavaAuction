@@ -12,14 +12,16 @@ public interface AuctionStrategy {
 
     /**
      * Gets the valid prices for a bid in this auction.
-     * 
+     *
+     * @require: Auction is open
      */
     public Selection<Price> getValidPrices();
 
     /**
      * Calculates the winning bid for this auction.
      *
-     * @ensure: bid != null
+     * @require: A bid has been placed
+     * @ensure: getWinningBid() != null
      */
     public Bid getWinningBid();
 
@@ -29,6 +31,7 @@ public interface AuctionStrategy {
      * other bid.
      *
      * @require: getValidPrices().contains(bid.getPrice())
+     * @ensure: Bid has been placed
      */
     public void placeBid(Bid bid);
 
