@@ -16,7 +16,7 @@ import us.nstro.javaauction.bids.Item;
  *
  * @author bbecker
  */
-public class AuctionInfoBuilder {
+public class AuctionBuilder {
 
     private UUID auctionID;
     private String name;
