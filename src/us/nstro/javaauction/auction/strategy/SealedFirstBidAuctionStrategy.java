@@ -1,6 +1,6 @@
 package us.nstro.javaauction.auction.strategy;
 
-import us.nstro.javaauction.auction.Bid;
+import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.auction.Price;
 import us.nstro.javaauction.types.selection.Selection;
 

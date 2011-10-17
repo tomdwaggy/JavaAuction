@@ -1,4 +1,8 @@
-package us.nstro.javaauction.auction;
+package us.nstro.javaauction.bids;
+
+import us.nstro.javaauction.auction.Auction;
+import us.nstro.javaauction.auction.Price;
+import us.nstro.javaauction.auction.User;
 
 /**
  *  Bid, which represents a user's bid in a specified auction.
