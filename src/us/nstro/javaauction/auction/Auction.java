@@ -18,8 +18,6 @@ public abstract class Auction {
 
     private Bid currentWinningBid;
 
-    private Selection<Price> validPrices;
-
     /**
      * Create a new Abstract Auction.
      */
@@ -36,7 +34,7 @@ public abstract class Auction {
      *      bid.
      */
     public final Selection<Price> getValidPrices() {
-        return this.validPrices;
+        return this.auctionStrategy.getValidPrices();
     }
 
     /**
@@ -79,20 +77,6 @@ public abstract class Auction {
      */
     public final void closeAuction() {
         this.status.close(this.currentWinningBid);
-    }
-
-    /**
-     * Places the bid 'bid' on this auction. After bidding, the ascending
-     * auction is defined to accept the bid so long as it is higher than any
-     * other bid.
-     *
-     * @require: getValidBids().contains(bid)
-     */
-    public final void placeBid(Bid bid) {
-        this.currentWinningBid = this.auctionStrategy.getWinningBid();
-        this.validPrices = this.auctionStrategy.getValidPrices();
-        if(this.validPrices.isEmpty())
-            this.closeAuction();
     }
 
 }

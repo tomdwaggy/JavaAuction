@@ -15,12 +15,19 @@ public interface AuctionStrategy {
     public Selection<Price> getValidPrices();
 
     /**
-
-    /**
      * Calculates the winning bid for this auction.
      *
      * @ensure: bid != null
      */
     public Bid getWinningBid();
+
+    /**
+     * Places the bid 'bid' on this auction. After bidding, the ascending
+     * auction is defined to accept the bid so long as it is higher than any
+     * other bid.
+     *
+     * @require: getValidPrices().contains(bid.getPrice())
+     */
+    public void placeBid(Bid bid);
 
 }
