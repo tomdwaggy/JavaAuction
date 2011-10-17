@@ -5,6 +5,8 @@
 
 package us.nstro.javaauction.auction;
 
+import us.nstro.javaauction.bids.Bid;
+
 /**
  * A class for representing the status of an auction, such as whether an
  * auction is has been closed, whether there is a winner, and who won the

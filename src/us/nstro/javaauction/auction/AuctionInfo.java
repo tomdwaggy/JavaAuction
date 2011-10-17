@@ -7,6 +7,7 @@ package us.nstro.javaauction.auction;
 
 import java.util.List;
 import java.util.UUID;
+import us.nstro.javaauction.bids.Item;
 
 /**
  * AuctionInfo represents the "static" information that all auctions will
