@@ -9,10 +9,12 @@ import us.nstro.javaauction.types.selection.Selection;
  *
  * @author bbecker
  */
-public abstract class AbstractAuction implements Auction {
+public abstract class Auction {
 
     private AuctionInfo info;
     private AuctionStatus status;
+
+    private AuctionStrategy auctionStrategy;
 
     private Bid currentWinningBid;
 
@@ -21,9 +23,10 @@ public abstract class AbstractAuction implements Auction {
     /**
      * Create a new Abstract Auction.
      */
-    public AbstractAuction(AuctionInfo info) {
+    public Auction(AuctionInfo info, AuctionStrategy strategy) {
         this.info = info;
         this.status = new AuctionStatus();
+        this.auctionStrategy = strategy;
     }
 
     /**
@@ -31,25 +34,9 @@ public abstract class AbstractAuction implements Auction {
      *
      *  @ensure: getValidBids().contains(i) for all i which is a valid
      *      bid.
-    */
+     */
     public final Selection<Price> getValidPrices() {
         return this.validPrices;
-    }
-
-    /**
-     *  Updates the selection of valid bid prices for this auction.
-    */
-    protected void updateValidPrices(Selection<Price> prices) {
-        this.validPrices = prices;
-        if(prices.isEmpty())
-            this.closeAuction();
-    }
-
-    /**
-     * Sets the current winning bidder.
-     */
-    protected void setCurrentWinningBid(Bid bid) {
-        this.currentWinningBid = bid;
     }
 
     /**
@@ -92,6 +79,20 @@ public abstract class AbstractAuction implements Auction {
      */
     public final void closeAuction() {
         this.status.close(this.currentWinningBid);
+    }
+
+    /**
+     * Places the bid 'bid' on this auction. After bidding, the ascending
+     * auction is defined to accept the bid so long as it is higher than any
+     * other bid.
+     *
+     * @require: getValidBids().contains(bid)
+     */
+    public final void placeBid(Bid bid) {
+        this.currentWinningBid = this.auctionStrategy.getWinningBid();
+        this.validPrices = this.auctionStrategy.getValidPrices();
+        if(this.validPrices.isEmpty())
+            this.closeAuction();
     }
 
 }
