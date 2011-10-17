@@ -55,9 +55,9 @@ public class DutchAuctionStrategy implements AuctionStrategy {
     }
 
     /**
-     * Set a decrement value for the Dutch auction.
+     * Set the lowest price accepted.
      *
-     * @param decrementPrice
+     * @param lowestPrice
      */
     public void setLowestPrice(Price lowestPrice) {
         this.lowestPrice = lowestPrice;

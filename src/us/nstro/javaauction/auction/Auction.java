@@ -12,7 +12,7 @@ import us.nstro.javaauction.types.selection.Selection;
  *
  * @author bbecker
  */
-public abstract class Auction {
+public class Auction {
 
     private AuctionInfo info;
     private AuctionStatus status;
