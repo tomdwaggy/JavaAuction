@@ -13,13 +13,15 @@ public abstract class Auction {
 
     private AuctionInfo info;
     private AuctionStatus status;
-
     private AuctionStrategy auctionStrategy;
 
-    private Bid currentWinningBid;
-
     /**
-     * Create a new Abstract Auction.
+     * Create a new Auction with the given auction information and the given
+     * auction strategy.
+     *
+     * @param info Auction information
+     * @param strategy Auction strategy, the kind of auction this is
+     *          for instance, ascending or descending
      */
     public Auction(AuctionInfo info, AuctionStrategy strategy) {
         this.info = info;
@@ -35,6 +37,17 @@ public abstract class Auction {
      */
     public final Selection<Price> getValidPrices() {
         return this.auctionStrategy.getValidPrices();
+    }
+
+    /**
+     * Places the bid 'bid' on this auction. After bidding, the ascending
+     * auction is defined to accept the bid so long as it is higher than any
+     * other bid.
+     *
+     * @require: getValidPrices().contains(bid.getPrice())
+     */
+    public void placeBid(Bid bid) {
+        this.auctionStrategy.placeBid(bid);
     }
 
     /**
@@ -66,7 +79,7 @@ public abstract class Auction {
      *      getStatus().hasWinner() == false
      */
     public final void abortAuction() {
-        this.status.close();
+        this.status.abort();
     }
 
     /**
@@ -76,7 +89,7 @@ public abstract class Auction {
      * @ensure: getStatus().isClosed() == true
      */
     public final void closeAuction() {
-        this.status.close(this.currentWinningBid);
+        this.status.close(this.auctionStrategy.getWinningBid());
     }
 
 }

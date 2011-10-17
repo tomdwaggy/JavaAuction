@@ -14,8 +14,9 @@ package us.nstro.javaauction.auction;
  */
 public class AuctionStatus {
 
-    private Bid win;
+    private Bid winningBid;
     private boolean open;
+    private boolean aborted;
 
     /**
      * Create a new AuctionStatus in the default open status.
@@ -28,10 +29,11 @@ public class AuctionStatus {
      * Set the auction's status to closed without specifying a winner. This
      * is to represent an auction which has been closed prematurely.
      *
-     * @ensure: this.isClosed()
+     * @ensure: this.isClosed() && this.isAborted()
      */
-    public void close() {
+    public void abort() {
         this.open = false;
+        this.aborted = true;
     }
 
     /**
@@ -39,13 +41,14 @@ public class AuctionStatus {
      * represents a normally closed auction.
      *
      * @require: winner != null
-     * @ensure: this.isClosed()
+     * @ensure: this.isClosed() && this.isAborted() && this.hasWinningBid()
+     *              && this.getWinningBid() != null
      *
-     * @param winner the winning bid
+     * @param winningBid the bid which won the auction
      */
-    public void close(Bid win) {
-        this.close();
-        this.win = win;
+    public void close(Bid winningBid) {
+        this.open = false;
+        this.winningBid = winningBid;
     }
 
     /**
@@ -58,12 +61,21 @@ public class AuctionStatus {
     }
 
     /**
+     * Determine if the auction has been aborted.
+     *
+     * @return whether the auction has been aborted with no winner.
+     */
+    public boolean isAborted() {
+        return this.aborted;
+    }
+
+    /**
      * Determine if the auction has a winner.
      *
      * @return whether the auction has a winner.
      */
     public boolean hasWinningBid() {
-        return this.win != null;
+        return this.winningBid != null;
     }
 
     /**
@@ -74,7 +86,7 @@ public class AuctionStatus {
      * @return the bid which won the auction.
      */
     public Bid getWinningBid() {
-        return this.win;
+        return this.winningBid;
     }
 
 }
