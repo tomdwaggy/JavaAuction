@@ -1,7 +1,6 @@
 package us.nstro.javaauction.bids;
 
 import us.nstro.javaauction.auction.Auction;
-import us.nstro.javaauction.auction.Price;
 import us.nstro.javaauction.auction.User;
 
 /**

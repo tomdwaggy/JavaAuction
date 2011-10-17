@@ -1,4 +1,4 @@
-package us.nstro.javaauction.auction;
+package us.nstro.javaauction.bids;
 
 /**
  *  Price, which represents a price for a bid, buyout, etc. in an auction.

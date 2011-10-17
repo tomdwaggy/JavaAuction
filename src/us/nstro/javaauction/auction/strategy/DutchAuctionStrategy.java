@@ -3,7 +3,7 @@ package us.nstro.javaauction.auction.strategy;
 import java.util.Timer;
 import java.util.TimerTask;
 import us.nstro.javaauction.bids.Bid;
-import us.nstro.javaauction.auction.Price;
+import us.nstro.javaauction.bids.Price;
 import us.nstro.javaauction.types.selection.Selection;
 
 /**

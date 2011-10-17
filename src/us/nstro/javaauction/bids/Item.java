@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package us.nstro.javaauction.auction;
+package us.nstro.javaauction.bids;
 
 import java.util.UUID;
 
