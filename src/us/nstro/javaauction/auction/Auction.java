@@ -3,11 +3,64 @@ package us.nstro.javaauction.auction;
 import us.nstro.javaauction.types.selection.Selection;
 
 /**
- * The Auction interface allows clients to determine what bids are valid, and
- * to place bids. It also contains AuctionInfo and AuctionStatus which provide
- * information about the auction in a general case (what is being sold, etc).
-*/
-public interface Auction {
+ * The AbstractAuction class implements the base functionality of storing and
+ * retrieving the auction information, auction status, and current winning
+ * bid. It also implements the close and abort auction functionality.
+ *
+ * @author bbecker
+ */
+public abstract class AbstractAuction implements Auction {
+
+    private AuctionInfo info;
+    private AuctionStatus status;
+
+    private Bid currentWinningBid;
+
+    private Selection<Price> validPrices;
+
+    /**
+     * Create a new Abstract Auction.
+     */
+    public AbstractAuction(AuctionInfo info) {
+        this.info = info;
+        this.status = new AuctionStatus();
+    }
+
+    /**
+     *  Gets a selection of valid bid prices for this auction.
+     *
+     *  @ensure: getValidBids().contains(i) for all i which is a valid
+     *      bid.
+    */
+    public final Selection<Price> getValidPrices() {
+        return this.validPrices;
+    }
+
+    /**
+     *  Updates the selection of valid bid prices for this auction.
+    */
+    protected void updateValidPrices(Selection<Price> prices) {
+        this.validPrices = prices;
+        if(prices.isEmpty())
+            this.closeAuction();
+    }
+
+    /**
+     * Sets the current winning bidder.
+     */
+    protected void setCurrentWinningBid(Bid bid) {
+        this.currentWinningBid = bid;
+    }
+
+    /**
+     * Gets the auction status. This is dynamic data, such as whether the
+     * auction is closed or not, and who the winner is (if closed).
+     *
+     * @ensure: getInfo() != null
+     */
+    public final AuctionInfo getInfo() {
+        return this.info;
+    }
 
     /**
      * Get the auction information. This is static information about an
@@ -16,40 +69,9 @@ public interface Auction {
      *
      * @ensure: getInfo() != null
      */
-    public AuctionInfo getInfo();
-
-    /**
-     * Gets the auction status. This is dynamic data, such as whether the
-     * auction is closed or not, and who the winner is (if closed).
-     *
-     * @ensure: getInfo() != null
-     */
-    public AuctionStatus getStatus();
-
-    /**
-     * Gets a selection of valid bid prices for this auction.
-     *
-     * @require: getStatus.isClosed() == false
-     * @ensure: getValidBids().contains(i) for all i which is a valid
-     *     bid.
-    */
-    public Selection<Price> getValidPrices();
-    
-    /**
-     *  Places the bid 'bid' on this auction. After bidding, the
-     *
-     *  @require: getStatus.isClosed() == false &&
-     *      getValidBids().contains(bid)
-    */
-    public void placeBid(Bid bid);
-
-    /**
-     * Closes the auction normally, committing the winning bid.
-     *
-     * @require: getSTatus().isClosed() == false
-     * @ensure: getStatus().isClosed() == true
-     */
-    public void closeAuction();
+    public final AuctionStatus getStatus() {
+        return this.status;
+    }
 
     /**
      * Aborts the auction, not committing any current winners.
@@ -58,6 +80,18 @@ public interface Auction {
      * @ensure: getStatus().isClosed() == true &&
      *      getStatus().hasWinner() == false
      */
-    public void abortAuction();
-    
+    public final void abortAuction() {
+        this.status.close();
+    }
+
+    /**
+     * Closes the auction normally, committing the winning bid.
+     *
+     * @require: getSTatus().isClosed() == false
+     * @ensure: getStatus().isClosed() == true
+     */
+    public final void closeAuction() {
+        this.status.close(this.currentWinningBid);
+    }
+
 }
