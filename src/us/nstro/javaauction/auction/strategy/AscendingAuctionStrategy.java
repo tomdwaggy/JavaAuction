@@ -1,5 +1,7 @@
 package us.nstro.javaauction.auction.strategy;
 
+import java.util.Collection;
+import java.util.Collections;
 import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Price;
 import us.nstro.javaauction.type.Selection;
@@ -35,8 +37,8 @@ public class AscendingAuctionStrategy implements AuctionStrategy {
      *
      * @ensure: A valid bid has been placed.
      */
-    public Bid getWinningBid() {
-        return this.winningBid;
+    public Collection<Bid> getWinningBids() {
+        return Collections.singleton(this.winningBid);
     }
 
     /**

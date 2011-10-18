@@ -1,5 +1,7 @@
 package us.nstro.javaauction.auction.strategy;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 import us.nstro.javaauction.bids.Bid;
@@ -40,6 +42,8 @@ public class DutchAuctionStrategy implements AuctionStrategy {
         this.decrementPrice = decrement;
         this.decrementInterval = interval;
         this.lowestPrice = lowest;
+
+        this.validPrices = new Selection<Price>(this.currentPrice, this.currentPrice);
     }
 
     /**
@@ -76,8 +80,8 @@ public class DutchAuctionStrategy implements AuctionStrategy {
      *
      * @ensure: A valid bid has been placed.
      */
-    public Bid getWinningBid() {
-        return this.winningBid;
+    public Collection<Bid> getWinningBids() {
+        return Collections.singleton(this.winningBid);
     }
 
     /**

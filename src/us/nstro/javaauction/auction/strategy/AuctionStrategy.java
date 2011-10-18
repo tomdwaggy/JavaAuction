@@ -1,5 +1,6 @@
 package us.nstro.javaauction.auction.strategy;
 
+import java.util.Collection;
 import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Price;
 import us.nstro.javaauction.type.Selection;
@@ -23,7 +24,7 @@ public interface AuctionStrategy {
      * @require: A bid has been placed
      * @ensure: getWinningBid() != null
      */
-    public Bid getWinningBid();
+    public Collection<Bid> getWinningBids();
 
     /**
      * Places the bid 'bid' on this auction. After bidding, the ascending

@@ -1,5 +1,6 @@
 package us.nstro.javaauction.auction;
 
+import java.util.Collection;
 import us.nstro.javaauction.auction.strategy.AuctionStrategy;
 import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Price;
@@ -51,6 +52,13 @@ public class Auction {
      */
     public void placeBid(Bid bid) {
         this.auctionStrategy.placeBid(bid);
+    }
+
+    /**
+     * Get the winning bid(s).
+     */
+    public Collection<Bid> getWinningBids() {
+        return this.auctionStrategy.getWinningBids();
     }
 
     /**
