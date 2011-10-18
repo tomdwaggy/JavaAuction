@@ -2,7 +2,7 @@ package us.nstro.javaauction.auction.strategy;
 
 import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Price;
-import us.nstro.javaauction.types.selection.Selection;
+import us.nstro.javaauction.type.Selection;
 
 /**
  *  The AscendingAuction implements an Auction which is a traditional open
@@ -14,14 +14,14 @@ public class AscendingAuctionStrategy implements AuctionStrategy {
     private Bid winningBid;
 
     /**
-     * Set a minimum bid for the auction.
+     * Creates a new ascending auction with the given initial price selection.
      *
-     * @param minimumBid
+     * @param initial initial valid prices selection
      */
-    public void setMinimumBid(Price minimumBid) {
-        this.validPrices = new Selection<Price>(minimumBid);
+    public AscendingAuctionStrategy(Selection<Price> initial) {
+        this.validPrices = initial;
     }
-    
+
     /**
      * Gets the valid prices for a bid in this auction.
      *

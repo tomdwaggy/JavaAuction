@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Price;
-import us.nstro.javaauction.types.selection.Selection;
+import us.nstro.javaauction.type.Selection;
 
 /**
  * The Dutch Auction implements a simple auction, where the auctioneer starts
@@ -27,40 +27,19 @@ public class DutchAuctionStrategy implements AuctionStrategy {
     private Bid winningBid;
 
     /**
-     * Set an initial bid for the Dutch auction.
+     * Creates a new Dutch auction strategy.
      *
-     * @param initialPrice
+     * @param initial the starting bid
+     * @param decrement the price the offers are lowered each interval
+     * @param interval how often the price offer is lowered
+     * @param lowest the lowest possible price which will be accepted
+     * 
      */
-    public void setInitialPrice(Price initialPrice) {
-        this.currentPrice = initialPrice;
-        this.validPrices = new Selection<Price>(initialPrice, initialPrice);
-    }
-
-    /**
-     * Set a decrement value for the Dutch auction.
-     *
-     * @param decrementPrice
-     */
-    public void setDecrementPrice(Price decrementPrice) {
-        this.decrementPrice = decrementPrice;
-    }
-
-    /**
-     * Set a decrement interval in seconds.
-     *
-     * @param decrementInterval interval in seconds
-     */
-    public void setDecrementInterval(long seconds) {
-        this.decrementInterval = seconds;
-    }
-
-    /**
-     * Set the lowest price accepted.
-     *
-     * @param lowestPrice
-     */
-    public void setLowestPrice(Price lowestPrice) {
-        this.lowestPrice = lowestPrice;
+    public DutchAuctionStrategy(Price initial, Price decrement, int interval, Price lowest) {
+        this.currentPrice = initial;
+        this.decrementPrice = decrement;
+        this.decrementInterval = interval;
+        this.lowestPrice = lowest;
     }
 
     /**

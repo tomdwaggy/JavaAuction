@@ -2,7 +2,7 @@ package us.nstro.javaauction.auction.strategy;
 
 import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Price;
-import us.nstro.javaauction.types.selection.Selection;
+import us.nstro.javaauction.type.Selection;
 
 /**
  * The AuctionStrategy determines the valid prices for a bid, and how to

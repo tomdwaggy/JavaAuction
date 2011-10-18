@@ -2,7 +2,7 @@ package us.nstro.javaauction.auction.strategy;
 
 import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Price;
-import us.nstro.javaauction.types.selection.Selection;
+import us.nstro.javaauction.type.Selection;
 
 /**
  * The Sealed First Bid Auction is an auction in which all of the bidders bid
@@ -18,12 +18,12 @@ public class SealedFirstBidAuctionStrategy implements AuctionStrategy {
     private Bid winningBid;
 
     /**
-     * Set a minimum bid for the auction.
+     * Create a new Sealed First Bid auction strategy.
      *
-     * @param minimumBid
+     * @param accepted a selection of bids which will be accepted.
      */
-    public void setMinimumBid(Price minimumBid) {
-        this.validPrices = new Selection<Price>(minimumBid);
+    public SealedFirstBidAuctionStrategy(Selection<Price> accepted) {
+        this.validPrices = accepted;
     }
 
     /**

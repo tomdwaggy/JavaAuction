@@ -19,28 +19,34 @@ public class AuctionBuilder {
     private User auctioneer;
     private Collection<Item> products;
 
-    public final void setAuctionID(UUID auctionId) {
+    public final AuctionBuilder setAuctionID(UUID auctionId) {
         this.auctionID = auctionId;
+        return this;
     }
 
-    public final void setAuctionName(String name) {
+    public final AuctionBuilder setAuctionName(String name) {
         this.name = name;
+        return this;
     }
 
-    public final void setAuctioneer(User auctioneer) {
+    public final AuctionBuilder setAuctioneer(User auctioneer) {
         this.auctioneer = auctioneer;
+        return this;
     }
 
-    public final void setProduct(Item product) {
+    public final AuctionBuilder setProduct(Item product) {
         this.products = Collections.singleton(product);
+        return this;
     }
 
-    public final void setProducts(Collection<Item> products) {
+    public final AuctionBuilder setProducts(Collection<Item> products) {
         this.products = products;
+        return this;
     }
 
-    public final void setStrategy(AuctionStrategy strategy) {
+    public final AuctionBuilder setStrategy(AuctionStrategy strategy) {
         this.strategy = strategy;
+        return this;
     }
 
     public final Auction createAuction() {
