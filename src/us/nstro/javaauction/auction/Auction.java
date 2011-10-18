@@ -64,14 +64,17 @@ public class Auction {
     }
 
     /**
-     * Get the auction information. This is static information about an
-     * auction, such as who the auctioneer is, what is being auctioned off,
-     * the auction name and ID, etc.
-     *
-     * @ensure: getInfo() != null
+     * Is the auction open?
      */
-    public final AuctionStatus getStatus() {
-        return this.status;
+    public final boolean isOpen() {
+        return this.status.isOpen();
+    }
+
+    /**
+     * Is the auction aborted?
+     */
+    public final boolean isAborted() {
+        return this.status.isAborted();
     }
 
     /**
@@ -92,7 +95,7 @@ public class Auction {
      * @ensure: getStatus().isClosed() == true
      */
     public final void closeAuction() {
-        this.status.close(this.auctionStrategy.getWinningBid());
+        this.status.close();
     }
 
 }

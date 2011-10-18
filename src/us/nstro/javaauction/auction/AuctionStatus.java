@@ -5,8 +5,6 @@
 
 package us.nstro.javaauction.auction;
 
-import us.nstro.javaauction.bids.Bid;
-
 /**
  * A class for representing the status of an auction, such as whether an
  * auction is has been closed, whether there is a winner, and who won the
@@ -16,7 +14,6 @@ import us.nstro.javaauction.bids.Bid;
  */
 public class AuctionStatus {
 
-    private Bid winningBid;
     private boolean open;
     private boolean aborted;
 
@@ -25,6 +22,7 @@ public class AuctionStatus {
      */
     public AuctionStatus() {
         this.open = true;
+        this.aborted = false;
     }
 
     /**
@@ -48,18 +46,18 @@ public class AuctionStatus {
      *
      * @param winningBid the bid which won the auction
      */
-    public void close(Bid winningBid) {
+    public void close() {
         this.open = false;
-        this.winningBid = winningBid;
+        this.aborted = false;
     }
 
     /**
      * Determine if the auction has been closed.
      *
-     * @return whether the auction has been closed or not.
+     * @return whether the auction is still open.
      */
-    public boolean isClosed() {
-        return !this.open;
+    public boolean isOpen() {
+        return this.open;
     }
 
     /**
@@ -69,26 +67,6 @@ public class AuctionStatus {
      */
     public boolean isAborted() {
         return this.aborted;
-    }
-
-    /**
-     * Determine if the auction has a winner.
-     *
-     * @return whether the auction has a winner.
-     */
-    public boolean hasWinningBid() {
-        return this.winningBid != null;
-    }
-
-    /**
-     * Get the winner of this auction.
-     *
-     * @require: this.hasWinner()
-     * 
-     * @return the bid which won the auction.
-     */
-    public Bid getWinningBid() {
-        return this.winningBid;
     }
 
 }
