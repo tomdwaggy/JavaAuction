@@ -80,5 +80,28 @@ public class Selection<Select extends Comparable<? super Select>> {
     public boolean isEmpty() {
         return (this.min == null && this.max == null);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Selection) {
+            Selection other = (Selection) o;
+            return (this.min.equals(other.min) && this.max.equals(other.max));
+        }
+        else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + (this.min != null ? this.min.hashCode() : 0);
+        hash = 37 * hash + (this.max != null ? this.max.hashCode() : 0);
+        return hash;
+    }
+
+    public String toString() {
+        return "" + this.min + " " + this.max;
+    }
     
 }

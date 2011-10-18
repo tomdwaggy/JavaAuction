@@ -28,9 +28,10 @@ public class ExternalAuctionTimer implements AuctionTimer {
         this.tasks.removeAll(tasks);
     }
 
-    public void run() {
+    public void tick() {
         for(TimerTask t : tasks) {
             t.run();
         }
     }
+    
 }

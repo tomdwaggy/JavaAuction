@@ -25,6 +25,13 @@ public class User {
     public UUID getUserID() {
         return this.userID;
     }
+
+    /**
+     * Get the user name.
+     */
+    public String getName() {
+        return this.name;
+    }
     
     /**
      *  Determine if two users are the same

@@ -62,5 +62,9 @@ public class Price implements Comparable<Price> {
         hash = 67 * hash + (this.amount != null ? this.amount.hashCode() : 0);
         return hash;
     }
+
+    public String toString() {
+        return "$" + (this.amount / 100) + "." + (this.amount % 100);
+    }
     
 }
