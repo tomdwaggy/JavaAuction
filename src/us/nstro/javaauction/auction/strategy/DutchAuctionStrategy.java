@@ -1,5 +1,6 @@
 package us.nstro.javaauction.auction.strategy;
 
+import us.nstro.javaauction.timer.AuctionTimer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Timer;
@@ -17,8 +18,7 @@ import us.nstro.javaauction.type.Selection;
  */
 public class DutchAuctionStrategy implements AuctionStrategy {
 
-    private Timer priceDropTimer;
-    private long decrementInterval;
+    private AuctionTimer decrementTimer;
 
     private Selection<Price> validPrices;
 
@@ -37,10 +37,10 @@ public class DutchAuctionStrategy implements AuctionStrategy {
      * @param lowest the lowest possible price which will be accepted
      * 
      */
-    public DutchAuctionStrategy(Price initial, Price decrement, int interval, Price lowest) {
+    public DutchAuctionStrategy(AuctionTimer timer, Price initial, Price decrement, Price lowest) {
         this.currentPrice = initial;
         this.decrementPrice = decrement;
-        this.decrementInterval = interval;
+        this.decrementTimer = timer;
         this.lowestPrice = lowest;
 
         this.validPrices = new Selection<Price>(this.currentPrice, this.currentPrice);
@@ -51,20 +51,17 @@ public class DutchAuctionStrategy implements AuctionStrategy {
      * lowers the price when the interval is reached.
      */
     public void startAuctionTimer() {
-        long delay = 1000 * this.decrementInterval; // 1000 ms, as interval is in s
-
         TimerTask priceDrop = new TimerTask() {
             public void run() {
                 currentPrice = currentPrice.prev(decrementPrice);
                 validPrices = new Selection<Price>(currentPrice, currentPrice);
                 
                 if(currentPrice.compareTo(lowestPrice) < 0)
-                    priceDropTimer.cancel();
+                    decrementTimer.cancel();
             }
         };
 
-        this.priceDropTimer = new Timer();
-        this.priceDropTimer.schedule(priceDrop, delay, delay);
+        this.decrementTimer.schedule(priceDrop);
     }
 
     /**
