@@ -15,8 +15,15 @@ import us.nstro.javaauction.type.Selection;
  */
 public class Auction {
 
+    public enum Status {
+        NOT_STARTED,    // Auction has not started yet
+        OPEN,           // Auction has started, not been closed
+        CLOSED,         // Auction has been closed normally
+        ABORTED         // Auction has been aborted forcefully (no winner)
+    }
+
     private AuctionInfo info;
-    private AuctionStatus status;
+    private Auction.Status status;
     private AuctionStrategy auctionStrategy;
 
     /**
@@ -29,7 +36,7 @@ public class Auction {
      */
     public Auction(AuctionInfo info, AuctionStrategy strategy) {
         this.info = info;
-        this.status = new AuctionStatus();
+        this.status = Auction.Status.NOT_STARTED;
         this.auctionStrategy = strategy;
     }
 
@@ -72,38 +79,58 @@ public class Auction {
     }
 
     /**
+     * Has the auction been started?
+     */
+    public final boolean hasStarted() {
+        return this.status != Auction.Status.NOT_STARTED;
+    }
+
+    /**
+     * Start the auction.
+     *
+     * @require: !hasStarted()
+     * @ensure: hasStarted()
+     */
+    public final void start() {
+        if(!this.hasStarted())
+            this.status = Auction.Status.OPEN;
+    }
+
+    /**
      * Is the auction open?
      */
     public final boolean isOpen() {
-        return this.status.isOpen();
+        return this.status == Auction.Status.OPEN;
     }
 
     /**
      * Is the auction aborted?
      */
     public final boolean isAborted() {
-        return this.status.isAborted();
+        return this.status == Auction.Status.ABORTED;
     }
 
     /**
      * Aborts the auction, not committing any current winners.
      *
-     * @require: getStatus().isClosed() == false
-     * @ensure: getStatus().isClosed() == true &&
-     *      getStatus().hasWinner() == false
+     * @require: isClosed() == false
+     * @ensure: isClosed() == true &&
+     *      hasWinner() == false
      */
     public final void abortAuction() {
-        this.status.abort();
+        if(this.isOpen())
+            this.status = Auction.Status.ABORTED;
     }
 
     /**
      * Closes the auction normally, committing the winning bid.
      *
-     * @require: getSTatus().isClosed() == false
-     * @ensure: getStatus().isClosed() == true
+     * @require: isClosed() == false
+     * @ensure: isClosed() == true
      */
     public final void closeAuction() {
-        this.status.close();
+        if(this.isOpen())
+            this.status = Auction.Status.CLOSED;
     }
 
 }

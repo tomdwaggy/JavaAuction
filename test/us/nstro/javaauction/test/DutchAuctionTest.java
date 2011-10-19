@@ -79,4 +79,9 @@ public class DutchAuctionTest {
         assertEquals(this.auction.getValidPrices(), new Selection<Price>(new Price(4900), new Price(4900)));
     }
 
+    @Test
+    public void testMinimumPrice() {
+        for(int i = 0; i < )
+    }
+
 }
