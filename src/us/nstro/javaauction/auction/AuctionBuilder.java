@@ -3,16 +3,15 @@ package us.nstro.javaauction.auction;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
-import us.nstro.javaauction.auction.strategy.AuctionStrategy;
 import us.nstro.javaauction.bids.Item;
+import us.nstro.javaauction.bids.Price;
+import us.nstro.javaauction.timer.AuctionTimer;
 
 /**
  *
  * @author bbecker
  */
 public class AuctionBuilder {
-
-    private AuctionStrategy strategy;
 
     private UUID auctionID;
     private String name;
@@ -44,14 +43,19 @@ public class AuctionBuilder {
         return this;
     }
 
-    public final AuctionBuilder setStrategy(AuctionStrategy strategy) {
-        this.strategy = strategy;
-        return this;
+    public final AbstractAuction createAscendingAuction(Price minimumBid) {
+        AuctionInfo info = new AuctionInfo(this.auctionID, this.name, this.auctioneer, this.products);
+        return new AscendingAuction(info, minimumBid);
     }
 
-    public final Auction createAuction() {
+    public final AbstractAuction createDutchAuction(AuctionTimer timer, Price startingBid, Price decrement, Price lowest) {
         AuctionInfo info = new AuctionInfo(this.auctionID, this.name, this.auctioneer, this.products);
-        return new Auction(info, this.strategy);
+        return new DutchAuction(info, timer, startingBid, decrement, lowest);
+    }
+
+    public final AbstractAuction createSealedFirstBidAuction(Price minimumBid) {
+        AuctionInfo info = new AuctionInfo(this.auctionID, this.name, this.auctioneer, this.products);
+        return new SealedFirstBidAuction(info, minimumBid);
     }
     
 }

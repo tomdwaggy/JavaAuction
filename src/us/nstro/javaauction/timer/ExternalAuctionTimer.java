@@ -16,6 +16,8 @@ import java.util.TimerTask;
 public class ExternalAuctionTimer implements AuctionTimer {
     Collection<TimerTask> tasks;
 
+    private boolean started = false;
+
     public ExternalAuctionTimer() {
         this.tasks = new LinkedList<TimerTask>();
     }
@@ -29,9 +31,14 @@ public class ExternalAuctionTimer implements AuctionTimer {
     }
 
     public void tick() {
-        for(TimerTask t : tasks) {
-            t.run();
-        }
+        if(started)
+            for(TimerTask t : tasks) {
+                t.run();
+            }
+    }
+
+    public void start() {
+        this.started = true;
     }
     
 }

@@ -13,5 +13,6 @@ import java.util.TimerTask;
  */
 public interface AuctionTimer {
     public void schedule(TimerTask task);
+    public void start();
     public void cancel();
 }

@@ -8,10 +8,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.util.UUID;
-import us.nstro.javaauction.auction.Auction;
+import us.nstro.javaauction.auction.AbstractAuction;
 import us.nstro.javaauction.auction.AuctionBuilder;
 import us.nstro.javaauction.auction.User;
-import us.nstro.javaauction.auction.strategy.DutchAuctionStrategy;
 import us.nstro.javaauction.bids.Item;
 import us.nstro.javaauction.bids.Price;
 import us.nstro.javaauction.timer.ExternalAuctionTimer;
@@ -23,7 +22,7 @@ import us.nstro.javaauction.type.Selection;
  */
 public class DutchAuctionTest {
 
-    private Auction auction;
+    private AbstractAuction auction;
     private ExternalAuctionTimer timer;
 
     public DutchAuctionTest() {
@@ -42,20 +41,11 @@ public class DutchAuctionTest {
         AuctionBuilder builder = new AuctionBuilder();
         builder.setAuctionID(UUID.randomUUID());
         builder.setAuctionName("Big kitty!");
-
-        User auctioneer = new User(UUID.randomUUID(), "Vera Stalks");
-        builder.setAuctioneer(auctioneer);
-
-        Item product = new Item(UUID.randomUUID(), "An oversized Maine coon");
-        builder.setProduct(product);
+        builder.setAuctioneer(new User(UUID.randomUUID(), "Vera Stalks"));
+        builder.setProduct(new Item(UUID.randomUUID(), "An oversized Maine coon"));
 
         this.timer = new ExternalAuctionTimer();
-        DutchAuctionStrategy dutch = new DutchAuctionStrategy(timer, new Price(5000), new Price(50), new Price(500));
-        dutch.startAuctionTimer();
-
-        builder.setStrategy(dutch);
-
-        this.auction = builder.createAuction();
+        this.auction = builder.createDutchAuction(timer, new Price(5000), new Price(50), new Price(500));        
     }
 
     @After
@@ -72,16 +62,12 @@ public class DutchAuctionTest {
 
     @Test
     public void testAuctionPrices() {
+        this.timer.start();
         assertEquals(this.auction.getValidPrices(), new Selection<Price>(new Price(5000), new Price(5000)));
         this.timer.tick();
         assertEquals(this.auction.getValidPrices(), new Selection<Price>(new Price(4950), new Price(4950)));
         this.timer.tick();
         assertEquals(this.auction.getValidPrices(), new Selection<Price>(new Price(4900), new Price(4900)));
-    }
-
-    @Test
-    public void testMinimumPrice() {
-        for(int i = 0; i < )
     }
 
 }

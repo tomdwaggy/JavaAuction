@@ -1,54 +1,21 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package us.nstro.javaauction.auction;
 
 import java.util.Collection;
-import us.nstro.javaauction.auction.strategy.AuctionStrategy;
 import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Price;
 import us.nstro.javaauction.type.Selection;
 
 /**
- * The AbstractAuction class implements the base functionality of storing and
- * retrieving the auction information, auction status, and current winning
- * bid. It also implements the close and abort auction functionality.
  *
  * @author bbecker
  */
-public class Auction {
-
-    public enum Status {
-        NOT_STARTED,    // Auction has not started yet
-        OPEN,           // Auction has started, not been closed
-        CLOSED,         // Auction has been closed normally
-        ABORTED         // Auction has been aborted forcefully (no winner)
-    }
-
-    private AuctionInfo info;
-    private Auction.Status status;
-    private AuctionStrategy auctionStrategy;
-
-    /**
-     * Create a new Auction with the given auction information and the given
-     * auction strategy.
-     *
-     * @param info Auction information
-     * @param strategy Auction strategy, the kind of auction this is
-     *          for instance, ascending or descending
-     */
-    public Auction(AuctionInfo info, AuctionStrategy strategy) {
-        this.info = info;
-        this.status = Auction.Status.NOT_STARTED;
-        this.auctionStrategy = strategy;
-    }
-
-    /**
-     *  Gets a selection of valid bid prices for this auction.
-     *
-     *  @ensure: getValidBids().contains(i) for all i which is a valid
-     *      bid.
-     */
-    public final Selection<Price> getValidPrices() {
-        return this.auctionStrategy.getValidPrices();
-    }
+public interface Auction {
+    public Selection<Price> getValidPrices();
 
     /**
      * Places the bid 'bid' on this auction. After bidding, the ascending
@@ -57,16 +24,12 @@ public class Auction {
      *
      * @require: getValidPrices().contains(bid.getPrice())
      */
-    public void placeBid(Bid bid) {
-        this.auctionStrategy.placeBid(bid);
-    }
+    public void placeBid(Bid bid);
 
     /**
      * Get the winning bid(s).
      */
-    public Collection<Bid> getWinningBids() {
-        return this.auctionStrategy.getWinningBids();
-    }
+    public Collection<Bid> getWinningBids();
 
     /**
      * Gets the auction status. This is dynamic data, such as whether the
@@ -74,16 +37,12 @@ public class Auction {
      *
      * @ensure: getInfo() != null
      */
-    public final AuctionInfo getInfo() {
-        return this.info;
-    }
+    public AuctionInfo getInfo();
 
     /**
      * Has the auction been started?
      */
-    public final boolean hasStarted() {
-        return this.status != Auction.Status.NOT_STARTED;
-    }
+    public boolean hasStarted();
 
     /**
      * Start the auction.
@@ -91,24 +50,17 @@ public class Auction {
      * @require: !hasStarted()
      * @ensure: hasStarted()
      */
-    public final void start() {
-        if(!this.hasStarted())
-            this.status = Auction.Status.OPEN;
-    }
+    public void start();
 
     /**
      * Is the auction open?
      */
-    public final boolean isOpen() {
-        return this.status == Auction.Status.OPEN;
-    }
+    public boolean isOpen();
 
     /**
      * Is the auction aborted?
      */
-    public final boolean isAborted() {
-        return this.status == Auction.Status.ABORTED;
-    }
+    public boolean isAborted();
 
     /**
      * Aborts the auction, not committing any current winners.
@@ -117,10 +69,7 @@ public class Auction {
      * @ensure: isClosed() == true &&
      *      hasWinner() == false
      */
-    public final void abortAuction() {
-        if(this.isOpen())
-            this.status = Auction.Status.ABORTED;
-    }
+    public void abortAuction();
 
     /**
      * Closes the auction normally, committing the winning bid.
@@ -128,9 +77,5 @@ public class Auction {
      * @require: isClosed() == false
      * @ensure: isClosed() == true
      */
-    public final void closeAuction() {
-        if(this.isOpen())
-            this.status = Auction.Status.CLOSED;
-    }
-
+    public void closeAuction();
 }
