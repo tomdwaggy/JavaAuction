@@ -40,11 +40,6 @@ public interface Auction {
     public AuctionInfo getInfo();
 
     /**
-     * Has the auction been started?
-     */
-    public boolean hasStarted();
-
-    /**
      * Start the auction.
      *
      * @require: !hasStarted()
@@ -53,29 +48,28 @@ public interface Auction {
     public void start();
 
     /**
-     * Is the auction open?
+     * Determine if the auction is currently open.
      */
     public boolean isOpen();
 
     /**
-     * Is the auction aborted?
+     * Determine if the auction has been aborted.
      */
     public boolean isAborted();
 
     /**
      * Aborts the auction, not committing any current winners.
      *
-     * @require: isClosed() == false
-     * @ensure: isClosed() == true &&
-     *      hasWinner() == false
+     * @require: isOpen() == true
+     * @ensure: isOpen() == false && isAborted() == false && hasWinner() == false
      */
     public void abortAuction();
 
     /**
      * Closes the auction normally, committing the winning bid.
      *
-     * @require: isClosed() == false
-     * @ensure: isClosed() == true
+     * @require: isOpen() == true
+     * @ensure: isOpen() == false && isAborted() == false
      */
     public void closeAuction();
 }

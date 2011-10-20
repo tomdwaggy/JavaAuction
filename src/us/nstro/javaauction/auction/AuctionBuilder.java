@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.UUID;
 import us.nstro.javaauction.bids.Item;
 import us.nstro.javaauction.bids.Price;
-import us.nstro.javaauction.timer.AuctionTimer;
+import us.nstro.javaauction.handler.Ticker;
 
 /**
  *
@@ -13,15 +13,9 @@ import us.nstro.javaauction.timer.AuctionTimer;
  */
 public class AuctionBuilder {
 
-    private UUID auctionID;
     private String name;
     private User auctioneer;
     private Collection<Item> products;
-
-    public final AuctionBuilder setAuctionID(UUID auctionId) {
-        this.auctionID = auctionId;
-        return this;
-    }
 
     public final AuctionBuilder setAuctionName(String name) {
         this.name = name;
@@ -43,19 +37,21 @@ public class AuctionBuilder {
         return this;
     }
 
-    public final AbstractAuction createAscendingAuction(Price minimumBid) {
-        AuctionInfo info = new AuctionInfo(this.auctionID, this.name, this.auctioneer, this.products);
-        return new AscendingAuction(info, minimumBid);
+    private AuctionInfo createAuctionInfo() {
+        UUID auctionID = UUID.randomUUID();
+        return new AuctionInfo(auctionID, this.name, this.auctioneer, this.products);
     }
 
-    public final AbstractAuction createDutchAuction(AuctionTimer timer, Price startingBid, Price decrement, Price lowest) {
-        AuctionInfo info = new AuctionInfo(this.auctionID, this.name, this.auctioneer, this.products);
-        return new DutchAuction(info, timer, startingBid, decrement, lowest);
+    public final AscendingAuction createAscendingAuction(Price minimumBid) {
+        return new AscendingAuction(this.createAuctionInfo(), minimumBid);
     }
 
-    public final AbstractAuction createSealedFirstBidAuction(Price minimumBid) {
-        AuctionInfo info = new AuctionInfo(this.auctionID, this.name, this.auctioneer, this.products);
-        return new SealedFirstBidAuction(info, minimumBid);
+    public final DutchAuction createDutchAuction(Ticker timer, Price startingBid, Price decrement, Price lowest) {
+        return new DutchAuction(this.createAuctionInfo(), timer, startingBid, decrement, lowest);
+    }
+
+    public final SealedFirstBidAuction createSealedFirstBidAuction(Price minimumBid) {
+        return new SealedFirstBidAuction(this.createAuctionInfo(), minimumBid);
     }
     
 }

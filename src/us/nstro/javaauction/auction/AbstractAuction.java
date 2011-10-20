@@ -78,20 +78,13 @@ public abstract class AbstractAuction {
     }
 
     /**
-     * Has the auction been started?
-     */
-    public final boolean hasStarted() {
-        return this.status != AbstractAuction.Status.NOT_STARTED;
-    }
-
-    /**
      * Start the auction.
      *
-     * @require: !hasStarted()
-     * @ensure: hasStarted()
+     * @require: !isOpen() && !hasWinner() && !isAborted
+     * @ensure: isOpen()
      */
-    public final void start() {
-        if(!this.hasStarted())
+    public void startAuction() {
+        if(this.status == AbstractAuction.Status.NOT_STARTED)
             this.status = AbstractAuction.Status.OPEN;
     }
 

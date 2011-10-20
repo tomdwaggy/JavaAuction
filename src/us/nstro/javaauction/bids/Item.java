@@ -28,6 +28,17 @@ public class Item {
     }
 
     /**
+     * Creates a new item with the given item name.
+     *
+     * @param name
+     * @return
+     */
+    public static Item createItem(String itemName) {
+        UUID itemID = UUID.randomUUID();
+        return new Item(itemID, itemName);
+    }
+
+    /**
      * Get the item id.
      */
     public String getID() {

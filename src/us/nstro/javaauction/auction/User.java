@@ -20,6 +20,17 @@ public class User {
     }
 
     /**
+     * Creates a new user with the given user name.
+     * 
+     * @param name
+     * @return
+     */
+    public static User createUser(String name) {
+        UUID userID = UUID.randomUUID();
+        return new User(userID, name);
+    }
+
+    /**
      * Get the user ID.
      */
     public UUID getUserID() {

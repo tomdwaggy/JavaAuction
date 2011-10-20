@@ -8,12 +8,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.util.UUID;
-import us.nstro.javaauction.auction.AbstractAuction;
 import us.nstro.javaauction.auction.AuctionBuilder;
+import us.nstro.javaauction.auction.DutchAuction;
 import us.nstro.javaauction.auction.User;
+import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Item;
 import us.nstro.javaauction.bids.Price;
-import us.nstro.javaauction.timer.ExternalAuctionTimer;
+import us.nstro.javaauction.handler.ExternalTicker;
 import us.nstro.javaauction.type.Selection;
 
 /**
@@ -22,8 +23,8 @@ import us.nstro.javaauction.type.Selection;
  */
 public class DutchAuctionTest {
 
-    private AbstractAuction auction;
-    private ExternalAuctionTimer timer;
+    private DutchAuction auction;
+    private ExternalTicker timer;
 
     public DutchAuctionTest() {
     }
@@ -39,13 +40,12 @@ public class DutchAuctionTest {
     @Before
     public void setUp() {
         AuctionBuilder builder = new AuctionBuilder();
-        builder.setAuctionID(UUID.randomUUID());
         builder.setAuctionName("Big kitty!");
-        builder.setAuctioneer(new User(UUID.randomUUID(), "Vera Stalks"));
-        builder.setProduct(new Item(UUID.randomUUID(), "An oversized Maine coon"));
+        builder.setAuctioneer(User.createUser("Vera Stalks"));
+        builder.setProduct(Item.createItem("An oversized Maine coon"));
 
-        this.timer = new ExternalAuctionTimer();
-        this.auction = builder.createDutchAuction(timer, new Price(5000), new Price(50), new Price(500));        
+        this.timer = new ExternalTicker();
+        this.auction = builder.createDutchAuction(timer, new Price(5000), new Price(50), new Price(500));
     }
 
     @After
@@ -61,13 +61,66 @@ public class DutchAuctionTest {
     }
 
     @Test
-    public void testAuctionPrices() {
-        this.timer.start();
+    public void testAuctionStart() {
+        assertFalse(this.auction.isOpen());
+        assertFalse(this.auction.isAborted());
+
+        this.auction.startAuction();
+        assertTrue(this.auction.isOpen());
+        assertFalse(this.auction.isAborted());
+    }
+
+    @Test
+    public void testAuctionClose() {
+        assertFalse(this.auction.isOpen());
+        assertFalse(this.auction.isAborted());
+
+        this.auction.startAuction();
+        this.auction.closeAuction();
+
+        assertFalse(this.auction.isOpen());
+        assertFalse(this.auction.isAborted());
+    }
+
+    @Test
+    public void testAuctionAbort() {
+        assertFalse(this.auction.isOpen());
+        assertFalse(this.auction.isAborted());
+
+        this.auction.startAuction();
+        this.auction.abortAuction();
+
+        assertFalse(this.auction.isOpen());
+        assertTrue(this.auction.isAborted());
+    }
+
+    @Test
+    public void testValidPrices() {
+        this.auction.startAuction();
         assertEquals(this.auction.getValidPrices(), new Selection<Price>(new Price(5000), new Price(5000)));
         this.timer.tick();
         assertEquals(this.auction.getValidPrices(), new Selection<Price>(new Price(4950), new Price(4950)));
         this.timer.tick();
         assertEquals(this.auction.getValidPrices(), new Selection<Price>(new Price(4900), new Price(4900)));
+    }
+
+    @Test
+    public void testTimerFinish() {
+        this.auction.startAuction();
+        assertEquals(this.auction.getValidPrices(), new Selection<Price>(new Price(5000), new Price(5000)));
+        for(int i = 0; i < 95; i++)
+            this.timer.tick();
+        assertEquals(this.auction.getValidPrices(), new Selection<Price>(new Price(500), new Price(500)));
+    }
+
+    @Test
+    public void testPlaceValidBid() {
+        this.auction.startAuction();
+        this.auction.placeBid(new Bid(new User(UUID.randomUUID(), "Brian"), this.auction, new Price(5000)));
+
+        assertFalse(this.auction.isOpen());
+        assertFalse(this.auction.isAborted());
+        //assertTrue(this.auction.getWinningBids());
     }
 
 }

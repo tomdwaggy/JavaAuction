@@ -1,10 +1,8 @@
 package us.nstro.javaauction.auction;
 
-import us.nstro.javaauction.timer.AuctionTimer;
+import us.nstro.javaauction.handler.Ticker;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Timer;
-import java.util.TimerTask;
 import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Price;
 import us.nstro.javaauction.type.Selection;
@@ -18,7 +16,7 @@ import us.nstro.javaauction.type.Selection;
  */
 public class DutchAuction extends AbstractAuction {
 
-    private AuctionTimer decrementTimer;
+    private Ticker decrementTicker;
 
     private Selection<Price> validPrices;
 
@@ -29,7 +27,7 @@ public class DutchAuction extends AbstractAuction {
     private Bid winningBid;
 
     /**
-     * Creates a new Dutch auction strategy.
+     * Creates a new Dutch auction.
      *
      * @param initial the starting bid
      * @param decrement the price the offers are lowered each interval
@@ -37,11 +35,12 @@ public class DutchAuction extends AbstractAuction {
      * @param lowest the lowest possible price which will be accepted
      * 
      */
-    public DutchAuction(AuctionInfo info, AuctionTimer timer, Price initial, Price decrement, Price lowest) {
+    public DutchAuction(AuctionInfo info, Ticker ticker, Price initial, Price decrement, Price lowest) {
         super(info);
+        
         this.currentPrice = initial;
         this.decrementPrice = decrement;
-        this.decrementTimer = timer;
+        this.decrementTicker = ticker;
         this.lowestPrice = lowest;
 
         this.validPrices = new Selection<Price>(this.currentPrice, this.currentPrice);
@@ -51,24 +50,34 @@ public class DutchAuction extends AbstractAuction {
      * Starts the auction timer for the Dutch auction, which automatically
      * lowers the price when the interval is reached.
      */
-    public void startAuctionTimer() {
-        TimerTask priceDrop = new TimerTask() {
+    private void startDutchAuctionTimer() {
+        Runnable priceDrop = new Runnable() {
             public void run() {
+                if(currentPrice.prev(decrementPrice).compareTo(lowestPrice) < 0)
+                    return;
+
                 currentPrice = currentPrice.prev(decrementPrice);
                 validPrices = new Selection<Price>(currentPrice, currentPrice);
-                
-                if(currentPrice.compareTo(lowestPrice) < 0)
-                    decrementTimer.cancel();
             }
         };
 
-        this.decrementTimer.schedule(priceDrop);
+        this.decrementTicker.addTickHandler(priceDrop);
+    }
+
+    /**
+     *  Start the auction, starting the auction timer.
+     */
+    @Override
+    public void startAuction() {
+        super.startAuction();
+        if(this.isOpen())
+            this.startDutchAuctionTimer();
     }
 
     /**
      * Gets the valid prices for a bid in this auction.
-     *
      */
+    @Override
     public Selection<Price> getValidPrices() {
         return this.validPrices;
     }
@@ -78,6 +87,7 @@ public class DutchAuction extends AbstractAuction {
      *
      * @ensure: A valid bid has been placed.
      */
+    @Override
     public Collection<Bid> getWinningBids() {
         return Collections.singleton(this.winningBid);
     }
@@ -89,10 +99,12 @@ public class DutchAuction extends AbstractAuction {
      *
      * @require: getValidPrices().contains(bid.getPrice())
      */
+    @Override
     public void placeBid(Bid bid) {
         if(this.getValidPrices().contains(bid.getPrice())) {
             this.validPrices = new Selection<Price>(bid.getPrice().next(new Price(1)));
             this.winningBid = bid;
+            this.closeAuction();
         }
     }
 
