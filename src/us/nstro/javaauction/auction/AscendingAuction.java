@@ -18,7 +18,7 @@ public class AscendingAuction extends AbstractAuction {
     /**
      * Creates a new ascending auction with the given initial price selection.
      *
-     * @param initial initial valid prices selection
+     * @param minimumBid minimum bid for this auction
      */
     public AscendingAuction(AuctionInfo info, Price minimumBid) {
         super(info);
@@ -27,8 +27,8 @@ public class AscendingAuction extends AbstractAuction {
 
     /**
      * Gets the valid prices for a bid in this auction.
-     *
      */
+    @Override
     public Selection<Price> getValidPrices() {
         return validPrices;
     }
@@ -36,8 +36,10 @@ public class AscendingAuction extends AbstractAuction {
     /**
      * Calculates the winning bid for this auction.
      *
-     * @ensure: A valid bid has been placed.
+     * @require: hasWinner()
+     * @ensure: getWinningBids().size() > 0
      */
+    @Override
     public Collection<Bid> getWinningBids() {
         return Collections.singleton(this.winningBid);
     }
@@ -49,6 +51,7 @@ public class AscendingAuction extends AbstractAuction {
      *
      * @require: getValidPrices().contains(bid.getPrice())
      */
+    @Override
     public void placeBid(Bid bid) {
         if(this.getValidPrices().contains(bid.getPrice()))
             this.validPrices = new Selection<Price>(bid.getPrice().next(new Price(1)));

@@ -89,7 +89,10 @@ public class DutchAuction extends AbstractAuction {
      */
     @Override
     public Collection<Bid> getWinningBids() {
-        return Collections.singleton(this.winningBid);
+        if(this.winningBid != null)
+            return Collections.singleton(this.winningBid);
+        else
+            return Collections.emptyList();
     }
 
     /**

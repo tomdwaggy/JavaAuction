@@ -22,7 +22,7 @@ public class SealedFirstBidAuction extends AbstractAuction {
     /**
      * Create a new Sealed First Bid auction strategy.
      *
-     * @param accepted a selection of bids which will be accepted.
+     * @param minimumBid the lowest bid which will be accepted
      */
     public SealedFirstBidAuction(AuctionInfo info, Price minimumBid) {
         super(info);
@@ -33,6 +33,7 @@ public class SealedFirstBidAuction extends AbstractAuction {
      * Gets the valid prices for a bid in this auction.
      *
      */
+    @Override
     public Selection<Price> getValidPrices() {
         return this.validPrices;
     }
@@ -42,6 +43,7 @@ public class SealedFirstBidAuction extends AbstractAuction {
      *
      * @ensure: A valid bid has been placed.
      */
+    @Override
     public Collection<Bid> getWinningBids() {
         return Collections.singleton(this.winningBid);
     }
@@ -53,6 +55,7 @@ public class SealedFirstBidAuction extends AbstractAuction {
      *
      * @require: getValidBids().contains(bid)
      */
+    @Override
     public void placeBid(Bid bid) {
         if(this.sealedValidPrices.contains(bid.getPrice())) {
             this.winningBid = bid;

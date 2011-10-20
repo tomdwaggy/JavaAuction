@@ -114,13 +114,52 @@ public class DutchAuctionTest {
     }
 
     @Test
-    public void testPlaceValidBid() {
+    public void testPlaceStartingBid() {
         this.auction.startAuction();
-        this.auction.placeBid(new Bid(new User(UUID.randomUUID(), "Brian"), this.auction, new Price(5000)));
+        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(5000)));
 
         assertFalse(this.auction.isOpen());
         assertFalse(this.auction.isAborted());
-        //assertTrue(this.auction.getWinningBids());
+        assertFalse(this.auction.getWinningBids().isEmpty());
+    }
+
+    @Test
+    public void testPlaceInvalidBid() {
+        this.auction.startAuction();
+        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(4000)));
+
+        assertTrue(this.auction.isOpen());
+        assertFalse(this.auction.isAborted());
+        assertTrue(this.auction.getWinningBids().isEmpty());
+    }
+
+    @Test
+    public void testPlaceValidBid() {
+        this.auction.startAuction();
+
+        for(int i = 0; i < 4; i++)
+            this.timer.tick();
+        
+        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(4800)));
+
+        assertFalse(this.auction.isOpen());
+        assertFalse(this.auction.isAborted());
+        assertFalse(this.auction.getWinningBids().isEmpty());
+    }
+
+    @Test
+    public void testPlaceLowestBid() {
+        this.auction.startAuction();
+        assertEquals(this.auction.getValidPrices(), new Selection<Price>(new Price(5000), new Price(5000)));
+        for(int i = 0; i < 95; i++)
+            this.timer.tick();
+
+        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(500)));
+
+        assertFalse(this.auction.isOpen());
+        assertFalse(this.auction.isAborted());
+        assertFalse(this.auction.getWinningBids().isEmpty());
+        
     }
 
 }
