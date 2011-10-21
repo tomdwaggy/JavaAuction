@@ -18,6 +18,25 @@ public interface Auction {
     public Selection<Price> getValidPrices();
 
     /**
+     * Adds an Auction Event Listener to the given auction, in order to be
+     * notified when an event occurs.
+     * @param listener
+     */
+    public void addAuctionEventListener(AuctionEventListener listener);
+
+    /**
+     * Removes an Auction Event Listener from the given auction, in order to be
+     * notified when an event occurs.
+     * @param listener
+     */
+    public void removeAuctionEventListener(AuctionEventListener listener);
+
+    /**
+     * Get a list of all Auction Event Listeners.
+     */
+    public Collection<AuctionEventListener> getAuctionEventListeners();
+
+    /**
      * Places the bid 'bid' on this auction. After bidding, the ascending
      * auction is defined to accept the bid so long as it is higher than any
      * other bid.

@@ -1,5 +1,8 @@
 package us.nstro.javaauction.auction;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 /**
  * The AbstractAuction class implements the base functionality of storing and
  * retrieving the auction information, auction status, and current winning
@@ -9,15 +12,9 @@ package us.nstro.javaauction.auction;
  */
 public abstract class AbstractAuction implements Auction {
 
-    public enum Status {
-        NOT_STARTED,    // AbstractAuction has not started yet
-        OPEN,           // AbstractAuction has started, not been closed
-        CLOSED,         // AbstractAuction has been closed normally
-        ABORTED         // AbstractAuction has been aborted forcefully (no winner)
-    }
-
     private AuctionInfo info;
-    private AbstractAuction.Status status;
+    private AuctionStatus status;
+    private Collection<AuctionEventListener> listeners;
 
     /**
      * Create a new AbstractAuction with the given auction information and the given
@@ -29,7 +26,41 @@ public abstract class AbstractAuction implements Auction {
      */
     public AbstractAuction(AuctionInfo info) {
         this.info = info;
-        this.status = AbstractAuction.Status.NOT_STARTED;
+        this.status = AuctionStatus.NOT_STARTED;
+        this.listeners = new LinkedList<AuctionEventListener>();
+    }
+
+    /**
+     * Adds an Auction Event Listener to the given auction, in order to be
+     * notified when an event occurs.
+     * @param listener
+     */
+    public void addAuctionEventListener(AuctionEventListener listener) {
+        this.listeners.add(listener);
+    }
+
+    /**
+     * Removes an Auction Event Listener from the given auction, in order to be
+     * notified when an event occurs.
+     * @param listener
+     */
+    public void removeAuctionEventListener(AuctionEventListener listener) {
+        this.listeners.remove(listener);
+    }
+
+    /**
+     * Get a list of all Auction Event Listeners.
+     */
+    public Collection<AuctionEventListener> getAuctionEventListeners() {
+        return this.listeners;
+    }
+
+    /**
+     * Fire an Auction Event to all of the Listeners
+     */
+    protected void fireAuctionEvent(AuctionEvent evt) {
+        for(AuctionEventListener listener : this.listeners)
+            listener.auctionEventOccurred(evt);
     }
 
     /**
@@ -49,22 +80,22 @@ public abstract class AbstractAuction implements Auction {
      * @ensure: isOpen()
      */
     public void startAuction() {
-        if(this.status == AbstractAuction.Status.NOT_STARTED)
-            this.status = AbstractAuction.Status.OPEN;
+        if(this.status == AuctionStatus.NOT_STARTED)
+            this.status = AuctionStatus.OPEN;
     }
 
     /**
      * Is the auction open?
      */
     public boolean isOpen() {
-        return this.status == AbstractAuction.Status.OPEN;
+        return this.status == AuctionStatus.OPEN;
     }
 
     /**
      * Is the auction aborted?
      */
     public boolean isAborted() {
-        return this.status == AbstractAuction.Status.ABORTED;
+        return this.status == AuctionStatus.ABORTED;
     }
 
     /**
@@ -76,7 +107,7 @@ public abstract class AbstractAuction implements Auction {
      */
     public void abortAuction() {
         if(this.isOpen())
-            this.status = AbstractAuction.Status.ABORTED;
+            this.status = AuctionStatus.ABORTED;
     }
 
     /**
@@ -87,7 +118,7 @@ public abstract class AbstractAuction implements Auction {
      */
     public void closeAuction() {
         if(this.isOpen())
-            this.status = AbstractAuction.Status.CLOSED;
+            this.status = AuctionStatus.CLOSED;
     }
 
 }

@@ -53,6 +53,9 @@ public class DutchAuction extends AbstractAuction {
      * lowers the price when the interval is reached.
      */
     private void startDutchAuctionTimer() {
+
+        // This runnable drops the price by the given decrement that this dutch
+        // auction was created with.
         Runnable priceDrop = new Runnable() {
             public void run() {
                 if(currentPrice.prev(decrementPrice).compareTo(lowestPrice) < 0)
@@ -63,15 +66,19 @@ public class DutchAuction extends AbstractAuction {
             }
         };
 
+        // Add our runnable to the ticker, to be called every tick.
         this.decrementTicker.addTickHandler(priceDrop);
     }
 
     /**
-     *  Start the auction, starting the auction timer.
+     * Start the auction, starting the auction timer. Starting the auction
+     * will also start the dutch auction timer, which decrements the auction
+     * value.
      */
     @Override
     public void startAuction() {
         super.startAuction();
+
         if(this.isOpen())
             this.startDutchAuctionTimer();
     }
@@ -89,6 +96,8 @@ public class DutchAuction extends AbstractAuction {
      * @ensure: A valid bid has been placed.
      */
     public Collection<Bid> getWinningBids() {
+        // Return the winning bid as a singleton collection, if there is a
+        // winning bid, otherwise return an empty list.
         if(this.winningBid != null)
             return Collections.singleton(this.winningBid);
         else
@@ -103,9 +112,14 @@ public class DutchAuction extends AbstractAuction {
      * @require: getValidPrices().contains(bid.getPrice())
      */
     public void placeBid(Bid bid) {
+        // Does the valid prices contain the bid to be placed?
         if(this.getValidPrices().contains(bid.getPrice())) {
+            // There are no longer any valid prices, bidding is over.
             this.validPrices = new EmptySelection<Price>();
+            // Set the winning bid to the current bid.
             this.winningBid = bid;
+            // Close the auction immediately, as the dutch auction is won by
+            // the first valid bid.
             this.closeAuction();
         }
     }
