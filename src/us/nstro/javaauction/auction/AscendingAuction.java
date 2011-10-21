@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Price;
+import us.nstro.javaauction.type.Minimum;
 import us.nstro.javaauction.type.Selection;
 
 /**
@@ -22,15 +23,14 @@ public class AscendingAuction extends AbstractAuction {
      */
     public AscendingAuction(AuctionInfo info, Price minimumBid) {
         super(info);
-        this.validPrices = new Selection<Price>(minimumBid);
+        this.validPrices = new Minimum<Price>(minimumBid);
     }
 
     /**
      * Gets the valid prices for a bid in this auction.
      */
-    @Override
     public Selection<Price> getValidPrices() {
-        return validPrices;
+        return this.validPrices;
     }
 
     /**
@@ -39,9 +39,11 @@ public class AscendingAuction extends AbstractAuction {
      * @require: hasWinner()
      * @ensure: getWinningBids().size() > 0
      */
-    @Override
     public Collection<Bid> getWinningBids() {
-        return Collections.singleton(this.winningBid);
+        if(this.winningBid != null)
+            return Collections.singleton(this.winningBid);
+        else
+            return Collections.emptyList();
     }
 
     /**
@@ -51,11 +53,11 @@ public class AscendingAuction extends AbstractAuction {
      *
      * @require: getValidPrices().contains(bid.getPrice())
      */
-    @Override
     public void placeBid(Bid bid) {
-        if(this.getValidPrices().contains(bid.getPrice()))
-            this.validPrices = new Selection<Price>(bid.getPrice().next(new Price(1)));
+        if(this.getValidPrices().contains(bid.getPrice())) {
+            this.validPrices = new Minimum<Price>(bid.getPrice().next(new Price(1)));
             this.winningBid = bid;
+        }
     }
     
 }

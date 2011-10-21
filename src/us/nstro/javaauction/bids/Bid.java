@@ -1,6 +1,6 @@
 package us.nstro.javaauction.bids;
 
-import us.nstro.javaauction.auction.AbstractAuction;
+import us.nstro.javaauction.auction.Auction;
 import us.nstro.javaauction.auction.User;
 
 /**
@@ -9,13 +9,13 @@ import us.nstro.javaauction.auction.User;
 public class Bid {
 
     private User user;
-    private AbstractAuction auction;
+    private Auction auction;
     private Price price;
 
     /**
      *  Create a new bid by user for auction at the price amount.
     */
-    public Bid(User user, AbstractAuction auction, Price price) {
+    public Bid(User user, Auction auction, Price price) {
         this.user = user;
         this.auction = auction;
         this.price = price;
@@ -31,7 +31,7 @@ public class Bid {
     /**
      *  Get the AbstractAuction which this bid is for.
     */
-    public AbstractAuction getAuction() {
+    public Auction getAuction() {
         return this.auction;
     }
     
@@ -40,6 +40,11 @@ public class Bid {
     */
     public Price getPrice() {
         return this.price;
+    }
+
+    @Override
+    public String toString() {
+        return "Bid { By: " + this.user.getName() + " At: " + this.price.toString() + "}";
     }
     
 }

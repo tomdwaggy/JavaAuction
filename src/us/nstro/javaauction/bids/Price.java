@@ -63,8 +63,10 @@ public class Price implements Comparable<Price> {
         return hash;
     }
 
+    @Override
     public String toString() {
-        return "$" + (this.amount / 100) + "." + (this.amount % 100);
+        String extraZero = (this.amount % 100) >= 10 ? "" : "0";
+        return "$" + (this.amount / 100) + "." + extraZero + (this.amount % 100);
     }
     
 }

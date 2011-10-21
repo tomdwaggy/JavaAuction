@@ -1,12 +1,5 @@
 package us.nstro.javaauction.auction;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.UUID;
-import us.nstro.javaauction.bids.Bid;
-import us.nstro.javaauction.bids.Price;
-import us.nstro.javaauction.type.Selection;
-
 /**
  * The AbstractAuction class implements the base functionality of storing and
  * retrieving the auction information, auction status, and current winning
@@ -14,7 +7,7 @@ import us.nstro.javaauction.type.Selection;
  *
  * @author bbecker
  */
-public abstract class AbstractAuction {
+public abstract class AbstractAuction implements Auction {
 
     public enum Status {
         NOT_STARTED,    // AbstractAuction has not started yet
@@ -40,40 +33,12 @@ public abstract class AbstractAuction {
     }
 
     /**
-     *  Gets a selection of valid bid prices for this auction.
-     *
-     *  @ensure: getValidBids().contains(i) for all i which is a valid
-     *      bid.
-     */
-    public Selection<Price> getValidPrices() {
-        return new Selection<Price>(new Price(50), new Price(100));
-    }
-
-    /**
-     * Places the bid 'bid' on this auction. After bidding, the ascending
-     * auction is defined to accept the bid so long as it is higher than any
-     * other bid.
-     *
-     * @require: getValidPrices().contains(bid.getPrice())
-     */
-    public void placeBid(Bid bid) {
-        //this.auctionStrategy.placeBid(bid);
-    }
-
-    /**
-     * Get the winning bid(s).
-     */
-    public Collection<Bid> getWinningBids() {
-        return Collections.singleton(new Bid(new User(UUID.randomUUID(), "TEST"), this, new Price(500)));
-    }
-
-    /**
      * Gets the auction status. This is dynamic data, such as whether the
      * auction is closed or not, and who the winner is (if closed).
      *
      * @ensure: getInfo() != null
      */
-    public final AuctionInfo getInfo() {
+    public AuctionInfo getInfo() {
         return this.info;
     }
 
@@ -91,14 +56,14 @@ public abstract class AbstractAuction {
     /**
      * Is the auction open?
      */
-    public final boolean isOpen() {
+    public boolean isOpen() {
         return this.status == AbstractAuction.Status.OPEN;
     }
 
     /**
      * Is the auction aborted?
      */
-    public final boolean isAborted() {
+    public boolean isAborted() {
         return this.status == AbstractAuction.Status.ABORTED;
     }
 
@@ -109,7 +74,7 @@ public abstract class AbstractAuction {
      * @ensure: isClosed() == true &&
      *      hasWinner() == false
      */
-    public final void abortAuction() {
+    public void abortAuction() {
         if(this.isOpen())
             this.status = AbstractAuction.Status.ABORTED;
     }
@@ -120,7 +85,7 @@ public abstract class AbstractAuction {
      * @require: isClosed() == false
      * @ensure: isClosed() == true
      */
-    public final void closeAuction() {
+    public void closeAuction() {
         if(this.isOpen())
             this.status = AbstractAuction.Status.CLOSED;
     }

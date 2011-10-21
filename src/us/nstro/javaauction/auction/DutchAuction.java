@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Price;
+import us.nstro.javaauction.type.EmptySelection;
 import us.nstro.javaauction.type.Selection;
+import us.nstro.javaauction.type.SingleValue;
 
 /**
  * The Dutch Auction implements a simple auction, where the auctioneer starts
@@ -43,7 +45,7 @@ public class DutchAuction extends AbstractAuction {
         this.decrementTicker = ticker;
         this.lowestPrice = lowest;
 
-        this.validPrices = new Selection<Price>(this.currentPrice, this.currentPrice);
+        this.validPrices = new SingleValue<Price>(this.currentPrice);
     }
 
     /**
@@ -57,7 +59,7 @@ public class DutchAuction extends AbstractAuction {
                     return;
 
                 currentPrice = currentPrice.prev(decrementPrice);
-                validPrices = new Selection<Price>(currentPrice, currentPrice);
+                validPrices = new SingleValue<Price>(currentPrice);
             }
         };
 
@@ -77,7 +79,6 @@ public class DutchAuction extends AbstractAuction {
     /**
      * Gets the valid prices for a bid in this auction.
      */
-    @Override
     public Selection<Price> getValidPrices() {
         return this.validPrices;
     }
@@ -87,7 +88,6 @@ public class DutchAuction extends AbstractAuction {
      *
      * @ensure: A valid bid has been placed.
      */
-    @Override
     public Collection<Bid> getWinningBids() {
         if(this.winningBid != null)
             return Collections.singleton(this.winningBid);
@@ -102,10 +102,9 @@ public class DutchAuction extends AbstractAuction {
      *
      * @require: getValidPrices().contains(bid.getPrice())
      */
-    @Override
     public void placeBid(Bid bid) {
         if(this.getValidPrices().contains(bid.getPrice())) {
-            this.validPrices = new Selection<Price>(bid.getPrice().next(new Price(1)));
+            this.validPrices = new EmptySelection<Price>();
             this.winningBid = bid;
             this.closeAuction();
         }

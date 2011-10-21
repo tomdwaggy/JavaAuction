@@ -6,9 +6,8 @@
 package us.nstro.javaauction.handler;
 
 /**
- *
  * A Ticker interface, which is like a timer with multiple possible
- * implementations.
+ * implementations, including user-driven timers for testing.
  *
  * @author bbecker
  */

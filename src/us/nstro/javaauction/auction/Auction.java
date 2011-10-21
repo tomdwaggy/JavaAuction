@@ -45,7 +45,7 @@ public interface Auction {
      * @require: !hasStarted()
      * @ensure: hasStarted()
      */
-    public void start();
+    public void startAuction();
 
     /**
      * Determine if the auction is currently open.
