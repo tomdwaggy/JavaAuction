@@ -33,6 +33,7 @@ public abstract class AbstractAuction implements Auction {
     /**
      * Adds an Auction Event Listener to the given auction, in order to be
      * notified when an event occurs.
+     * 
      * @param listener
      */
     public void addAuctionEventListener(AuctionEventListener listener) {
@@ -42,6 +43,7 @@ public abstract class AbstractAuction implements Auction {
     /**
      * Removes an Auction Event Listener from the given auction, in order to be
      * notified when an event occurs.
+     *
      * @param listener
      */
     public void removeAuctionEventListener(AuctionEventListener listener) {
@@ -56,9 +58,10 @@ public abstract class AbstractAuction implements Auction {
     }
 
     /**
-     * Fire an Auction Event to all of the Listeners
+     * Fire an Auction Event to all of the Listeners.
      */
-    protected void fireAuctionEvent(AuctionEvent evt) {
+    protected void fireAuctionEvent() {
+        AuctionEvent evt = new AuctionEvent(this, this.status);
         for(AuctionEventListener listener : this.listeners)
             listener.auctionEventOccurred(evt);
     }
@@ -80,8 +83,10 @@ public abstract class AbstractAuction implements Auction {
      * @ensure: isOpen()
      */
     public void startAuction() {
-        if(this.status == AuctionStatus.NOT_STARTED)
+        if(this.status == AuctionStatus.NOT_STARTED) {
             this.status = AuctionStatus.OPEN;
+            this.fireAuctionEvent();
+        }
     }
 
     /**
@@ -106,8 +111,10 @@ public abstract class AbstractAuction implements Auction {
      *      hasWinner() == false
      */
     public void abortAuction() {
-        if(this.isOpen())
+        if(this.isOpen()) {
             this.status = AuctionStatus.ABORTED;
+            this.fireAuctionEvent();
+        }
     }
 
     /**
@@ -117,8 +124,10 @@ public abstract class AbstractAuction implements Auction {
      * @ensure: isClosed() == true
      */
     public void closeAuction() {
-        if(this.isOpen())
+        if(this.isOpen()) {
             this.status = AuctionStatus.CLOSED;
+            this.fireAuctionEvent();
+        }
     }
 
 }
