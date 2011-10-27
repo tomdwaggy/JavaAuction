@@ -8,7 +8,6 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 
 import us.nstro.javaauction.auction.Auction;
-import us.nstro.javaauction.auction.AuctionBuilder;
 import us.nstro.javaauction.auction.DutchAuctionBuilder;
 import us.nstro.javaauction.auction.User;
 
@@ -16,7 +15,7 @@ import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Item;
 import us.nstro.javaauction.bids.Price;
 
-import us.nstro.javaauction.handler.ExternalTicker;
+import us.nstro.javaauction.handler.MockTicker;
 import us.nstro.javaauction.type.SingleValue;
 
 /**
@@ -26,16 +25,21 @@ import us.nstro.javaauction.type.SingleValue;
  */
 public class DutchAuctionTest {
 
-    private AuctionBuilder builder;
+    private DutchAuctionBuilder builder;
     private Auction auction;
-    private ExternalTicker timer;
+    private MockTicker timer;
 
     public DutchAuctionTest() {
-        this.timer = new ExternalTicker();
-        this.builder = new DutchAuctionBuilder(this.timer, new Price(5000), new Price(50), new Price(500));
+        this.timer = new MockTicker();
+        this.builder = new DutchAuctionBuilder();
+        
         builder.setAuctionName("Big kitty!");
         builder.setAuctioneer(User.createUser("Vera Stalks"));
         builder.setProduct(Item.createItem("An oversized Maine coon"));
+        builder.setTicker(this.timer);
+        builder.setInitialPrice(new Price(5000));
+        builder.setLowestPrice(new Price(500));
+        builder.setDecrement(new Price(50));
     }
 
     @BeforeClass

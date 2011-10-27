@@ -13,6 +13,12 @@ package us.nstro.javaauction.auction;
  */
 public interface AuctionEventListener {
 
+    /**
+     * An auction event has occurred on the Auction on which this object
+     * is listening.
+     *
+     * @param event The auction event containing the new status of the auction.
+     */
     public void auctionEventOccurred(AuctionEvent event);
     
 }

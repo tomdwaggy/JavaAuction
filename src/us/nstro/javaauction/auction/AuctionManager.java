@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import us.nstro.javaauction.handler.Ticker;
+import us.nstro.javaauction.handler.TimerTicker;
 
 /**
  * This TimerTask simply closes the auction when it is executed. It is to
@@ -34,14 +36,14 @@ public class AuctionManager {
 
     private Map<Integer, Auction> id_auction;
 
-    private Timer closeTimer;
+    private Timer timer;
 
     /**
      * Create a new AuctionManager object.
      */
     public AuctionManager() {
         this.id_auction = new HashMap<Integer, Auction>();
-        this.closeTimer = new Timer();
+        this.timer = new Timer();
     }
 
     /**
@@ -57,10 +59,27 @@ public class AuctionManager {
      */
     public Auction createAuction(Integer auctionID, AuctionBuilder builder) {
         Auction auction = builder.build(auctionID);
+
         this.id_auction.put(auctionID, auction);
-        this.closeTimer.schedule(new CloseAuction(auction), auction.getInfo().getEndDate());
+        this.timer.schedule(new CloseAuction(auction), auction.getInfo().getEndDate());
         auction.startAuction();
+        
         return auction;
+    }
+
+    /**
+     * Create a new Ticker for use in keeping time of auction events in
+     * sync. It should only be used for auction events utilizing this particular
+     * auction manager.
+     *
+     * @long millis milliseconds of delay to tick for
+     *
+     * @return a new Ticker implementation based on the Auction Manager
+     */
+    public Ticker createTicker(long millis) {
+        TimerTicker tick = new TimerTicker();
+        this.timer.schedule(tick, millis, millis);
+        return tick;
     }
 
     /**
