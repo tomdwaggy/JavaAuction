@@ -6,6 +6,8 @@
 package us.nstro.javaauction.type;
 
 /**
+ * A selection with only a lower bound is a Minimum, for instance a
+ * Minimum<Price> for lowest price that's accepted in a bid.
  *
  * @author bbecker
  */
