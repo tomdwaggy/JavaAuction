@@ -21,8 +21,8 @@ public class AscendingAuction extends AbstractAuction {
      *
      * @param minimumBid minimum bid for this auction
      */
-    public AscendingAuction(AuctionInfo info, Price minimumBid) {
-        super(info);
+    public AscendingAuction(Integer id, AuctionInfo info, Price minimumBid) {
+        super(id, info);
         this.validPrices = new Minimum<Price>(minimumBid);
     }
 

@@ -5,7 +5,7 @@
 
 package us.nstro.javaauction.bids;
 
-import java.util.UUID;
+import java.util.Random;
 
 /**
  * The Item class represents a single item which is to be sold in an auction.
@@ -16,13 +16,13 @@ import java.util.UUID;
  */
 public class Item {
 
-    private UUID itemID;
+    private Integer itemID;
     private String itemName;
 
     /**
      * Create a new Item.
      */
-    public Item(UUID itemID, String itemName) {
+    public Item(Integer itemID, String itemName) {
         this.itemID = itemID;
         this.itemName = itemName;
     }
@@ -34,15 +34,15 @@ public class Item {
      * @return
      */
     public static Item createItem(String itemName) {
-        UUID itemID = UUID.randomUUID();
+        Integer itemID = new Random().nextInt();
         return new Item(itemID, itemName);
     }
 
     /**
      * Get the item id.
      */
-    public String getID() {
-        return this.itemName;
+    public Integer getID() {
+        return this.itemID;
     }
 
     /**

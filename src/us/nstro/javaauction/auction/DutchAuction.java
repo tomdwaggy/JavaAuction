@@ -37,8 +37,8 @@ public class DutchAuction extends AbstractAuction {
      * @param lowest the lowest possible price which will be accepted
      * 
      */
-    public DutchAuction(AuctionInfo info, Ticker ticker, Price initial, Price decrement, Price lowest) {
-        super(info);
+    public DutchAuction(Integer id, AuctionInfo info, Ticker ticker, Price initial, Price decrement, Price lowest) {
+        super(id, info);
         
         this.currentPrice = initial;
         this.decrementPrice = decrement;

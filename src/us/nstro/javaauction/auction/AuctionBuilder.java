@@ -1,17 +1,19 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package us.nstro.javaauction.auction;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.UUID;
 import us.nstro.javaauction.bids.Item;
-import us.nstro.javaauction.bids.Price;
-import us.nstro.javaauction.handler.Ticker;
 
 /**
  *
  * @author bbecker
  */
-public class AuctionBuilder {
+public abstract class AuctionBuilder {
 
     private String name;
     private User auctioneer;
@@ -37,21 +39,10 @@ public class AuctionBuilder {
         return this;
     }
 
-    private AuctionInfo createAuctionInfo() {
-        UUID auctionID = UUID.randomUUID();
-        return new AuctionInfo(auctionID, this.name, this.auctioneer, this.products);
+    protected AuctionInfo createAuctionInfo() {
+        return new AuctionInfo(this.name, this.auctioneer, this.products);
     }
 
-    public final AscendingAuction createAscendingAuction(Price minimumBid) {
-        return new AscendingAuction(this.createAuctionInfo(), minimumBid);
-    }
+    public abstract Auction build(Integer auctionID);
 
-    public final DutchAuction createDutchAuction(Ticker timer, Price startingBid, Price decrement, Price lowest) {
-        return new DutchAuction(this.createAuctionInfo(), timer, startingBid, decrement, lowest);
-    }
-
-    public final SealedFirstBidAuction createSealedFirstBidAuction(Price minimumBid) {
-        return new SealedFirstBidAuction(this.createAuctionInfo(), minimumBid);
-    }
-    
 }

@@ -1,20 +1,20 @@
 package us.nstro.javaauction.auction;
 
-import java.util.UUID;
+import java.util.Random;
 
 /**
  *  User, which represents a given user of the auction system.
 */
 public class User {
     
-    private UUID userID;
+    private Integer userID;
     private String name;
     
     /**
      *  Create a new user identified by the id userID and given
      *  a human-readable name.
     */
-    public User(UUID userID, String name) {
+    public User(Integer userID, String name) {
         this.userID = userID;
         this.name = name;
     }
@@ -26,14 +26,14 @@ public class User {
      * @return
      */
     public static User createUser(String name) {
-        UUID userID = UUID.randomUUID();
+        Integer userID = new Random().nextInt();
         return new User(userID, name);
     }
 
     /**
      * Get the user ID.
      */
-    public UUID getUserID() {
+    public Integer getUserID() {
         return this.userID;
     }
 

@@ -51,6 +51,11 @@ public interface Auction {
     public Collection<Bid> getWinningBids();
 
     /**
+     * Gets the unique auction identifier for this auction.
+     */
+    public Integer getID();
+
+    /**
      * Gets the auction status. This is dynamic data, such as whether the
      * auction is closed or not, and who the winner is (if closed).
      *

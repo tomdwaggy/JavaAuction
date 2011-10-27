@@ -25,8 +25,8 @@ public class SealedFirstBidAuction extends AbstractAuction {
      *
      * @param minimumBid the lowest bid which will be accepted
      */
-    public SealedFirstBidAuction(AuctionInfo info, Price minimumBid) {
-        super(info);
+    public SealedFirstBidAuction(Integer id, AuctionInfo info, Price minimumBid) {
+        super(id, info);
         this.validPrices = new Minimum<Price>(minimumBid);
         this.sealedValidPrices = this.validPrices;
     }

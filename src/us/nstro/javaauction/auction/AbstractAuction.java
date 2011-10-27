@@ -12,6 +12,7 @@ import java.util.LinkedList;
  */
 public abstract class AbstractAuction implements Auction {
 
+    private Integer id;
     private AuctionInfo info;
     private AuctionStatus status;
     private Collection<AuctionEventListener> listeners;
@@ -24,7 +25,8 @@ public abstract class AbstractAuction implements Auction {
      * @param strategy AbstractAuction strategy, the kind of auction this is
      *          for instance, ascending or descending
      */
-    public AbstractAuction(AuctionInfo info) {
+    public AbstractAuction(Integer id, AuctionInfo info) {
+        this.id = id;
         this.info = info;
         this.status = AuctionStatus.NOT_STARTED;
         this.listeners = new LinkedList<AuctionEventListener>();
@@ -64,6 +66,13 @@ public abstract class AbstractAuction implements Auction {
         AuctionEvent evt = new AuctionEvent(this, this.status);
         for(AuctionEventListener listener : this.listeners)
             listener.auctionEventOccurred(evt);
+    }
+
+    /**
+     * Gets the unique identifier for this auction.
+     */
+    public Integer getID() {
+        return this.id;
     }
 
     /**
