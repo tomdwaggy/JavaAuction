@@ -26,9 +26,8 @@ public class TimerTicker extends TimerTask implements Ticker {
     }
 
     public void run() {
-        for(Runnable r : tasks) {
+        for(Runnable r : tasks)
             r.run();
-        }
     }
 
 }

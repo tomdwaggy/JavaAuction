@@ -27,9 +27,8 @@ public class MockTicker implements Ticker {
     }
 
     public void tick() {
-        for(Runnable r : tasks) {
+        for(Runnable r : tasks)
             r.run();
-        }
     }
     
 }
