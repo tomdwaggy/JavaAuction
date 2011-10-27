@@ -1,11 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package us.nstro.javaauction.auction;
 
 /**
+ * AuctionStatus describes the status of an auction, whether it has not yet
+ * been started, is currently open, has been closed normally, or whether it
+ * has been aborted.
  *
  * @author brian
  */
