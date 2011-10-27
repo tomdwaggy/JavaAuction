@@ -7,6 +7,7 @@ package us.nstro.javaauction.auction;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import us.nstro.javaauction.bids.Item;
 
 /**
@@ -18,6 +19,7 @@ public abstract class AuctionBuilder {
     private String name;
     private User auctioneer;
     private Collection<Item> products;
+    private Date ends;
 
     public final AuctionBuilder setAuctionName(String name) {
         this.name = name;
@@ -39,8 +41,13 @@ public abstract class AuctionBuilder {
         return this;
     }
 
+    public final AuctionBuilder setEndDate(Date ends) {
+        this.ends = ends;
+        return this;
+    }
+
     protected AuctionInfo createAuctionInfo() {
-        return new AuctionInfo(this.name, this.auctioneer, this.products);
+        return new AuctionInfo(this.name, this.auctioneer, this.products, this.ends);
     }
 
     public abstract Auction build(Integer auctionID);

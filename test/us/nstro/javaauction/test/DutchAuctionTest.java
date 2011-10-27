@@ -9,6 +9,7 @@ import org.junit.BeforeClass;
 
 import us.nstro.javaauction.auction.Auction;
 import us.nstro.javaauction.auction.AuctionBuilder;
+import us.nstro.javaauction.auction.DutchAuctionBuilder;
 import us.nstro.javaauction.auction.User;
 
 import us.nstro.javaauction.bids.Bid;
@@ -30,7 +31,8 @@ public class DutchAuctionTest {
     private ExternalTicker timer;
 
     public DutchAuctionTest() {
-        this.builder = new AuctionBuilder();
+        this.timer = new ExternalTicker();
+        this.builder = new DutchAuctionBuilder(this.timer, new Price(5000), new Price(50), new Price(500));
         builder.setAuctionName("Big kitty!");
         builder.setAuctioneer(User.createUser("Vera Stalks"));
         builder.setProduct(Item.createItem("An oversized Maine coon"));
@@ -92,8 +94,7 @@ public class DutchAuctionTest {
 
     @Before
     public void setUp() {
-        this.timer = new ExternalTicker();
-        this.auction = this.builder.createDutchAuction(this.timer, new Price(5000), new Price(50), new Price(500));
+        this.auction = this.builder.build(0);
     }
 
     @Test
@@ -161,7 +162,6 @@ public class DutchAuctionTest {
         assertFalse(this.auction.isOpen());
         assertFalse(this.auction.isAborted());
         assertFalse(this.auction.getWinningBids().isEmpty());
-        
     }
 
 }

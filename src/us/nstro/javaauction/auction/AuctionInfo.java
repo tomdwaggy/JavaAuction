@@ -6,6 +6,7 @@
 package us.nstro.javaauction.auction;
 
 import java.util.Collection;
+import java.util.Date;
 import us.nstro.javaauction.bids.Item;
 
 /**
@@ -20,14 +21,16 @@ public class AuctionInfo {
     private String name;
     private User auctioneer;
     private Collection<Item> products;
+    private Date ends;
 
     /**
      * Create a new Auction Information object.
      */
-    public AuctionInfo(String name, User auctioneer, Collection<Item> products) {
+    public AuctionInfo(String name, User auctioneer, Collection<Item> products, Date ends) {
         this.name = name;
         this.auctioneer = auctioneer;
         this.products = products;
+        this.ends = ends;
     }
 
     /**
@@ -49,6 +52,13 @@ public class AuctionInfo {
      */
     public Collection<Item> getProducts() {
         return this.products;
+    }
+
+    /**
+     * Get the ending date.
+     */
+    public Date getEndDate() {
+        return this.ends;
     }
 
 }

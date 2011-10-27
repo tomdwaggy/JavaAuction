@@ -6,8 +6,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+
 import us.nstro.javaauction.auction.Auction;
 import us.nstro.javaauction.auction.AuctionBuilder;
+import us.nstro.javaauction.auction.AscendingAuctionBuilder;
 
 import us.nstro.javaauction.auction.User;
 import us.nstro.javaauction.bids.Bid;
@@ -25,7 +27,7 @@ public class AscendingAuctionTest {
     private Auction auction;
 
     public AscendingAuctionTest() {
-        this.builder = new AuctionBuilder();
+        this.builder = new AscendingAuctionBuilder(new Price(5000));
         builder.setAuctionName("Big kitty!");
         builder.setAuctioneer(User.createUser("Vera Stalks"));
         builder.setProduct(Item.createItem("An oversized Maine coon"));
@@ -87,7 +89,7 @@ public class AscendingAuctionTest {
 
     @Before
     public void setUp() {
-        this.auction = this.builder.createAscendingAuction(new Price(5000));
+        this.auction = this.builder.build(0);
     }
 
     @Test
