@@ -16,6 +16,7 @@ import us.nstro.javaauction.bids.Item;
 import us.nstro.javaauction.bids.Price;
 import us.nstro.javaauction.db.DatabaseException;
 import us.nstro.javaauction.db.DatabaseInterface;
+import us.nstro.javaauction.db.SQLiteConnection;
 
 /**
  *
@@ -33,6 +34,7 @@ public class AuctionTUI {
         this.testUser = user;
         this.read = new BufferedReader(new InputStreamReader(System.in));
         this.auctionManager = new AuctionManager();
+        this.dbi = new SQLiteConnection();
     }
 
     public String getStringFromPrompt(String prompt) throws IOException {

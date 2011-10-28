@@ -329,5 +329,13 @@ public interface DatabaseInterface {
    * @throws SQLException 
    */
   public void updateUserPassword(int userId, String newPW) throws DatabaseException;
+
+   /**
+   * returns the bid user for the bid specified by bidId
+   * @param bidId
+   * @return
+   * @throws SQLException
+   */
+  public int getBidUser(int bidId) throws DatabaseException;
   
 }

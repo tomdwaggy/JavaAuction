@@ -1,0 +1,5 @@
+BEGIN TRANSACTION;
+CREATE TABLE auctionType (name TEXT);
+CREATE TABLE auctions (buyout NUMERIC, currentAsk NUMERIC, currentBid NUMERIC, description TEXT, hasBuyout TEXT, imageLinks TEXT, owner NUMERIC, startTime NUMERIC, stopTime NUMERIC, title TEXT, type NUMERIC);
+CREATE TABLE users (firstName TEXT, isAdmin NUMERIC, lastName TEXT, login TEXT, password TEXT, title TEXT);
+COMMIT;

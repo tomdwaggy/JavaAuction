@@ -23,11 +23,12 @@ import us.nstro.javaauction.bids.Price;
  */
 public class AscendingAuctionTest {
 
-    private AuctionBuilder builder;
+    private AscendingAuctionBuilder builder;
     private Auction auction;
 
     public AscendingAuctionTest() {
-        this.builder = new AscendingAuctionBuilder(new Price(5000));
+        this.builder = new AscendingAuctionBuilder();
+        builder.setMinimumBid(new Price(5000));
         builder.setAuctionName("Big kitty!");
         builder.setAuctioneer(User.createUser("Vera Stalks"));
         builder.setProduct(Item.createItem("An oversized Maine coon"));
