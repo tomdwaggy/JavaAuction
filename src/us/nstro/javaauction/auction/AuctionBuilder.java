@@ -16,13 +16,18 @@ import us.nstro.javaauction.bids.Item;
  */
 public abstract class AuctionBuilder {
 
-    private String name;
+    private String name, description;
     private User auctioneer;
     private Collection<Item> products;
     private Date ends;
 
     public final AuctionBuilder setAuctionName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public final AuctionBuilder setAuctionDescription(String description) {
+        this.description = description;
         return this;
     }
 
@@ -47,7 +52,7 @@ public abstract class AuctionBuilder {
     }
 
     protected AuctionInfo createAuctionInfo() {
-        return new AuctionInfo(this.name, this.auctioneer, this.products, this.ends);
+        return new AuctionInfo(this.name, this.description, this.auctioneer, this.products, this.ends);
     }
 
     public abstract Auction build(Integer auctionID);

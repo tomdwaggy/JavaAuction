@@ -185,7 +185,8 @@ public interface DatabaseInterface {
   
   /**
    * Create an empty auction. 
-   * @param ownerId 
+   * @param ownerId
+   * @return ownerID
    */
   public int addAuction(int ownerId) throws DatabaseException;
   
@@ -237,7 +238,7 @@ public interface DatabaseInterface {
    * @param auctionId
    * @param stopTime 
    */
-  public void updateAuctionStopTime(int auctionId, int stopTime) throws DatabaseException;
+  public void updateAuctionStopTime(int auctionId, long stopTime) throws DatabaseException;
   
   /**
    * update an auction title
@@ -328,9 +329,5 @@ public interface DatabaseInterface {
    * @throws SQLException 
    */
   public void updateUserPassword(int userId, String newPW) throws DatabaseException;
-  
-  
- 
-  
   
 }

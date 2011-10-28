@@ -18,7 +18,7 @@ import us.nstro.javaauction.bids.Item;
  */
 public class AuctionInfo {
 
-    private String name;
+    private String name, description;
     private User auctioneer;
     private Collection<Item> products;
     private Date ends;
@@ -26,8 +26,9 @@ public class AuctionInfo {
     /**
      * Create a new Auction Information object.
      */
-    public AuctionInfo(String name, User auctioneer, Collection<Item> products, Date ends) {
+    public AuctionInfo(String name, String description, User auctioneer, Collection<Item> products, Date ends) {
         this.name = name;
+        this.description = description;
         this.auctioneer = auctioneer;
         this.products = products;
         this.ends = ends;
@@ -38,6 +39,13 @@ public class AuctionInfo {
      */
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * Get the auction description.
+     */
+    public String getDescription() {
+        return this.description;
     }
 
     /**

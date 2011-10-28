@@ -66,11 +66,19 @@ public class AuctionTUI {
         try {
             builder.setAuctioneer(this.testUser);
             builder.setAuctionName(this.getStringFromPrompt("Auction name"));
+            builder.setAuctionDescription(this.getStringFromPrompt("Auction description"));
             builder.setProduct(Item.createItem(this.getStringFromPrompt("Item name")));
             builder.setEndDate(this.getDateFromPrompt("Ending Date"));
-            builder.setMinimumBid(new Price(this.getFloatFromPrompt("Minimum bid")));
-            this.dbi.addAuction(this.testUser.getUserID());
-            this.auctionManager.createAuction(Integer.MIN_VALUE, builder);
+            float minimumBid = this.getFloatFromPrompt("Minimum bid");
+            builder.setMinimumBid(new Price(minimumBid));
+            int auctionID = this.dbi.addAuction(this.testUser.getUserID());
+            Auction auction = this.auctionManager.createAuction(auctionID, builder);
+            this.dbi.updateAuctionType(auctionID, auctionID);
+            this.dbi.updateAuctionTitle(auctionID, auction.getInfo().getName());
+            this.dbi.updateAuctionDescription(auctionID, auction.getInfo().getDescription());
+            this.dbi.updateAuctionCurrentBid(auctionID, Math.round(minimumBid * 100));
+            this.dbi.updateAuctionStartTime(auctionID, new Date().getTime());
+            this.dbi.updateAuctionStopTime(auctionID, auction.getInfo().getEndDate().getTime());
         } catch (IOException ioe) {
             System.out.println(ioe.toString());
         } catch (DatabaseException dbe) {

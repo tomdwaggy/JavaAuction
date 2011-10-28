@@ -598,7 +598,7 @@ public class SQLiteConnection implements DatabaseInterface {
   }
 
   
-  public void updateAuctionStopTime(int auctionId, int stopTime) throws DatabaseException {
+  public void updateAuctionStopTime(int auctionId, long stopTime) throws DatabaseException {
     this.doExec("UPDATE auctions SET [stopTime] = '"+stopTime+"' WHERE rowid = '"+auctionId+"';");
   }
 
@@ -841,6 +841,16 @@ public class SQLiteConnection implements DatabaseInterface {
   public int getBidAmount(int bidId) throws DatabaseException {
     return this.doGetOneInt("SELECT amount FROM bids WHERE rowid = '"+bidId+"';");
   }
+
+ /**
+   * returns the bid user for the bid specified by bidId
+   * @param bidId
+   * @return
+   * @throws SQLException
+   */
+  public int getBidUser(int bidId) throws DatabaseException {
+    return this.doGetOneInt("SELECT userId FROM bids WHERE rowid = '"+bidId+"';");
+  }
   
   /**
    * deletes the bid specified by bidId from the database
@@ -850,9 +860,5 @@ public class SQLiteConnection implements DatabaseInterface {
   public void deleteBid(int bidId) throws DatabaseException {
     this.doExec("DELETE * FROM bids WHERE rowid = '"+bidId+"';");
   }
-
-
-
-
   
 } // end of class
