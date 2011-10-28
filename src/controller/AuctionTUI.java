@@ -35,6 +35,21 @@ public class AuctionTUI {
         this.read = new BufferedReader(new InputStreamReader(System.in));
         this.auctionManager = new AuctionManager();
         this.dbi = new SQLiteConnection();
+        this.readAuctionsDatabase();
+    }
+
+    private void readAuctionsDatabase() {
+        try {
+            for(int auctionID : this.dbi.getAuctionAllIds()) {
+                if(this.dbi.getAuctionEnabled(auctionID)) {
+                    // stub, add stuff from the database which is going to
+                    // require handler for DB
+                }
+            }
+        } catch (DatabaseException dbe) {
+            // Failed to read database
+            System.out.println(dbe.toString());
+        }
     }
 
     public String getStringFromPrompt(String prompt) throws IOException {
@@ -75,7 +90,7 @@ public class AuctionTUI {
             builder.setMinimumBid(new Price(minimumBid));
             int auctionID = this.dbi.addAuction(this.testUser.getUserID());
             Auction auction = this.auctionManager.createAuction(auctionID, builder);
-            this.dbi.updateAuctionType(auctionID, auctionID);
+            //this.dbi.updateAuctionType(auctionID, auctionID);
             this.dbi.updateAuctionTitle(auctionID, auction.getInfo().getName());
             this.dbi.updateAuctionDescription(auctionID, auction.getInfo().getDescription());
             this.dbi.updateAuctionCurrentBid(auctionID, Math.round(minimumBid * 100));
@@ -105,7 +120,7 @@ public class AuctionTUI {
         System.out.println("Showing open Auctions");
         System.out.println("---------------------");
         for(Auction auction : this.auctionManager.listOpenAuctions()) {
-            System.out.println(auction.getID() + "\t\t" + auction.getInfo().getName());
+            System.out.println(auction.getID() + "\t" + auction.getInfo().getName());
         }
     }
 

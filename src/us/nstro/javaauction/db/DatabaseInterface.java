@@ -189,6 +189,8 @@ public interface DatabaseInterface {
    * @return ownerID
    */
   public int addAuction(int ownerId) throws DatabaseException;
+
+  public boolean getAuctionEnabled(int auctionId) throws DatabaseException;
   
   /**
    * Update an auction buyout price

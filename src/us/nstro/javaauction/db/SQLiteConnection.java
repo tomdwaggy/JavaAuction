@@ -543,7 +543,6 @@ public class SQLiteConnection implements DatabaseInterface {
   }
   
   public boolean getAuctionEnabled(int auctionId) throws DatabaseException {
-    
     return (this.doGetOneInt("SELECT enabled FROM auctions WHERE rowid = '"+auctionId+"';") > 0);
   }
   
