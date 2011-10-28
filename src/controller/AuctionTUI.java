@@ -14,12 +14,16 @@ import us.nstro.javaauction.auction.AuctionManager;
 import us.nstro.javaauction.auction.User;
 import us.nstro.javaauction.bids.Item;
 import us.nstro.javaauction.bids.Price;
+import us.nstro.javaauction.db.DatabaseException;
+import us.nstro.javaauction.db.DatabaseInterface;
 
 /**
  *
  * @author bbecker
  */
 public class AuctionTUI {
+
+    private DatabaseInterface dbi;
 
     private User testUser;
     private BufferedReader read;
@@ -65,9 +69,12 @@ public class AuctionTUI {
             builder.setProduct(Item.createItem(this.getStringFromPrompt("Item name")));
             builder.setEndDate(this.getDateFromPrompt("Ending Date"));
             builder.setMinimumBid(new Price(this.getFloatFromPrompt("Minimum bid")));
+            this.dbi.addAuction(this.testUser.getUserID());
             this.auctionManager.createAuction(Integer.MIN_VALUE, builder);
         } catch (IOException ioe) {
             System.out.println(ioe.toString());
+        } catch (DatabaseException dbe) {
+            System.out.println(dbe.toString());
         }
     }
 
