@@ -385,6 +385,18 @@ public class SQLiteConnection implements DatabaseInterface {
     return this.doGetOneString("SELECT title FROM auctions WHERE rowid='"+auctionId+"';");
   }
 
+ /**
+   * Returns the description of the auction specified by auctionId
+   * @require auctionId > 0
+   * @ensure Returns the title of the auction specified by auctionId
+   * @param auctionId the auction id of the auction to find the title of
+   * @return the title of the auction specified by auctionId
+   * @throws SQLException
+   */
+  public String getAuctionDescription(int auctionId) throws DatabaseException {
+    return this.doGetOneString("SELECT description FROM auctions WHERE rowid='"+auctionId+"';");
+  }
+
   /**
    * Returns the id of the auction type for the auction specified by auctionId
    * @require auctionId > 0

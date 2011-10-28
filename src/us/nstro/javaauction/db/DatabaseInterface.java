@@ -101,6 +101,16 @@ public interface DatabaseInterface {
    * @return 
    */
   public String getAuctionTitle(int auctionId) throws DatabaseException;
+
+   /**
+   * Returns the description of the auction specified by auctionId
+   * @require auctionId > 0
+   * @ensure Returns the title of the auction specified by auctionId
+   * @param auctionId the auction id of the auction to find the title of
+   * @return the title of the auction specified by auctionId
+   * @throws SQLException
+   */
+  public String getAuctionDescription(int auctionId) throws DatabaseException;
   
   /**
    * get the auction type id for the auction specified by auctionId
