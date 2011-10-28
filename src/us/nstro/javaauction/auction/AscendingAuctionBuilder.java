@@ -10,7 +10,7 @@ public class AscendingAuctionBuilder extends AuctionBuilder {
 
     private Price minimumBid;
 
-    public AscendingAuctionBuilder(Price minimumBid) {
+    public void setMinimumBid(Price minimumBid) {
         this.minimumBid = minimumBid;
     }
 

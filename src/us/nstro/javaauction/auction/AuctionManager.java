@@ -1,6 +1,8 @@
 package us.nstro.javaauction.auction;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -44,6 +46,17 @@ public class AuctionManager {
     public AuctionManager() {
         this.id_auction = new HashMap<Integer, Auction>();
         this.timer = new Timer();
+    }
+
+    /**
+     * Gets a list of all open Auctions.
+     */
+    public List<Auction> listOpenAuctions() {
+        List<Auction> list = new LinkedList<Auction>();
+        for(Auction auction : id_auction.values())
+            if(auction.isOpen())
+                list.add(auction);
+        return list;
     }
 
     /**

@@ -11,9 +11,18 @@ public class Price implements Comparable<Price> {
      *  Create a new price for the specified amount.
      *
      *  @require: amount > 0
-    */
+     */
     public Price(Integer amount) {
         this.amount = amount;
+    }
+
+   /**
+     *  Create a new price for the specified amount.
+     *
+     *  @require: amount > 0
+     */
+    public Price(Float amount) {
+        this.amount = Math.round(amount * 100);
     }
 
     /**
