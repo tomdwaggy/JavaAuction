@@ -44,6 +44,11 @@ public class AuctionTUI {
                 if(this.dbi.getAuctionEnabled(auctionID)) {
                     // stub, add stuff from the database which is going to
                     // require handler for DB
+                    //this.dbi.updateAuctionTitle(auctionID, auction.getInfo().getName());
+                    //this.dbi.updateAuctionDescription(auctionID, auction.getInfo().getDescription());
+                    //this.dbi.updateAuctionCurrentBid(auctionID, Math.round(minimumBid * 100));
+                    //this.dbi.updateAuctionStartTime(auctionID, new Date().getTime());
+                    //this.dbi.updateAuctionStopTime(auctionID, auction.getInfo().getEndDate().getTime());
                 }
             }
         } catch (DatabaseException dbe) {

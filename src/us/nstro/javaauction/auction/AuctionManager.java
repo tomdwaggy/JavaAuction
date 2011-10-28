@@ -71,7 +71,8 @@ public class AuctionManager {
      * @ensure: this.getAuction(auctionID) != null
      */
     public Auction createAuction(Integer auctionID, AuctionBuilder builder) {
-        Auction auction = builder.build(auctionID);
+        builder.setAuctionID(auctionID);
+        Auction auction = builder.build();
 
         this.id_auction.put(auctionID, auction);
         this.timer.schedule(new CloseAuction(auction), auction.getInfo().getEndDate());

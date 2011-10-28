@@ -37,8 +37,8 @@ public class DutchAuctionBuilder extends AuctionBuilder {
         return this;
     }
 
-    public Auction build(Integer auctionID) {
-        return new DutchAuction(auctionID, this.createAuctionInfo(), this.ticker, this.initial, this.decrement, this.lowest);
+    public Auction build() {
+        return new DutchAuction(this.getAuctionID(), this.createAuctionInfo(), this.ticker, this.initial, this.decrement, this.lowest);
     }
 
 }

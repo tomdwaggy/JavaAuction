@@ -14,8 +14,8 @@ public class SealedFirstBidAuctionBuilder extends AuctionBuilder {
         this.minimumBid = minimumBid;
     }
 
-    public Auction build(Integer auctionID) {
-        return new SealedFirstBidAuction(auctionID, this.createAuctionInfo(), this.minimumBid);
+    public Auction build() {
+        return new SealedFirstBidAuction(this.getAuctionID(), this.createAuctionInfo(), this.minimumBid);
     }
 
 }

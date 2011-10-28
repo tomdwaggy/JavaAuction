@@ -89,7 +89,8 @@ public class SealedFirstBidAuctionTest {
 
     @Before
     public void setUp() {
-        this.auction = this.builder.build(0);
+        this.builder.setAuctionID(0);
+        this.auction = this.builder.build();
     }
 
     @Test

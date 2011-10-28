@@ -14,8 +14,8 @@ public class AscendingAuctionBuilder extends AuctionBuilder {
         this.minimumBid = minimumBid;
     }
 
-    public Auction build(Integer auctionID) {
-        return new AscendingAuction(auctionID, this.createAuctionInfo(), this.minimumBid);
+    public Auction build() {
+        return new AscendingAuction(this.getAuctionID(), this.createAuctionInfo(), this.minimumBid);
     }
 
 }
