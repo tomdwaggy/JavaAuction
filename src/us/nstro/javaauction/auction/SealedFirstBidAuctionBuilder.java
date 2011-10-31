@@ -10,7 +10,7 @@ public class SealedFirstBidAuctionBuilder extends AuctionBuilder {
 
     private Price minimumBid;
 
-    public SealedFirstBidAuctionBuilder(Price minimumBid) {
+    public void setMinimumBid(Price minimumBid) {
         this.minimumBid = minimumBid;
     }
 

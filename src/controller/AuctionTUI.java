@@ -40,10 +40,10 @@ public class AuctionTUI {
 
     private void readAuctionsDatabase() {
         try {
+            DatabaseAuctionLoader loader = new DatabaseAuctionLoader(this.dbi);
             for(int auctionID : this.dbi.getAuctionAllIds()) {
                 if(this.dbi.getAuctionEnabled(auctionID)) {
-                    DatabaseAuctionBuilder build = new DatabaseAuctionBuilder(this.dbi);
-                    this.auctionManager.createAuction(auctionID, build.setFromDatabase(auctionID));
+                    this.auctionManager.createAuction(auctionID, loader.getAuctionBuilder(auctionID));
                 }
             }
         } catch (DatabaseException dbe) {
@@ -90,7 +90,7 @@ public class AuctionTUI {
             builder.setMinimumBid(new Price(minimumBid));
             int auctionID = this.dbi.addAuction(this.testUser.getUserID());
             Auction auction = this.auctionManager.createAuction(auctionID, builder);
-            //this.dbi.updateAuctionType(auctionID, auctionID);
+            // this.dbi.updateAuctionType(auctionID, 0);
             this.dbi.updateAuctionTitle(auctionID, auction.getInfo().getName());
             this.dbi.updateAuctionDescription(auctionID, auction.getInfo().getDescription());
             this.dbi.updateAuctionCurrentBid(auctionID, Math.round(minimumBid * 100));
@@ -124,6 +124,29 @@ public class AuctionTUI {
         }
     }
 
+    public void doAuctionInfo() {
+        try {
+            int choice = getIntegerFromPrompt("Auction ID to get info for");
+            Auction auction = this.auctionManager.getAuction(choice);
+
+            if(auction == null) {
+                System.out.println("That is not a valid auction ID.");
+                return;
+            }
+
+            System.out.println("Auction name: " + auction.getInfo().getName());
+            System.out.println("Auction description: " + auction.getInfo().getDescription());
+            System.out.println("Product(s): ");
+
+            for(Item i : auction.getInfo().getProducts())
+                System.out.println(i.getID() + " - " + i.getName());
+            
+            System.out.println("Closes: " + auction.getInfo().getEndDate());
+        } catch(IOException ioe) {
+            System.out.println(ioe.toString());
+        }
+    }
+
     public void doBidAuction() {
         
     }
@@ -134,7 +157,8 @@ public class AuctionTUI {
             do  {
                 System.out.println("[3] Create a new Auction");
                 System.out.println("[4] List open Auctions");
-                System.out.println("[5] Bid on an Auction");
+                System.out.println("[5] Auction Information");
+                System.out.println("[6] Bid on an Auction");
                 System.out.println("[0] End the Program");
                 choice = getIntegerFromPrompt("Enter your selection");
                 switch(choice) {
@@ -142,6 +166,8 @@ public class AuctionTUI {
                         doCreateAuction(); break;
                     case 4:
                         doListOpenAuctions(); break;
+                    case 5:
+                        doAuctionInfo(); break;
                 }
             } while (choice != 0);
         } catch (IOException ioe) {

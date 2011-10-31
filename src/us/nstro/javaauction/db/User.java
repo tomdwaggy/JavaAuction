@@ -43,8 +43,8 @@ public class User {
       this.title = name[2];
       this.isAdmin = isAdmin;
       this.login = login;
-      this.bidList = new LinkedList();
-      this.auctionList = new LinkedList();
+      this.bidList = new LinkedList<Bid>();
+      this.auctionList = new LinkedList<Auction>();
 //      this.loggedIn = true;
   }
   

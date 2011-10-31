@@ -53,9 +53,10 @@ public class AuctionManager {
      */
     public List<Auction> listOpenAuctions() {
         List<Auction> list = new LinkedList<Auction>();
-        for(Auction auction : id_auction.values())
+        for(Auction auction : id_auction.values()) {
             if(auction.isOpen())
                 list.add(auction);
+        }
         return list;
     }
 
