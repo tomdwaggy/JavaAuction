@@ -349,5 +349,7 @@ public interface DatabaseInterface {
    * @throws SQLException
    */
   public int getBidUser(int bidId) throws DatabaseException;
+
+  public int login(String login, String password) throws DatabaseException;
   
 }

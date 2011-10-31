@@ -322,4 +322,28 @@ public class User {
   public void updateLogin(String login) {
     this.login = login;
   }
+
+      /**
+     *  Determine if two users are the same
+     *
+     *  @require: Object to be compared with must be a User
+     *  @ensure:
+     *      if o.userID = this.userID, this.equals(o) == true
+     *      if o.userID != this.userID, this.equals(o) == false
+    */
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof User)
+            return this.userId == ((User)o).userId;
+        else
+            return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + this.userId;
+        return hash;
+    }
+    
 } // end of class

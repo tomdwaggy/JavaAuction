@@ -8,6 +8,7 @@ package us.nstro.javaauction.auction;
 import java.util.Collection;
 import java.util.Date;
 import us.nstro.javaauction.bids.Item;
+import us.nstro.javaauction.db.User;
 
 /**
  * AuctionInfo represents the "static" information that all auctions will

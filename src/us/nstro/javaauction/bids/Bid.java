@@ -1,7 +1,7 @@
 package us.nstro.javaauction.bids;
 
 import us.nstro.javaauction.auction.Auction;
-import us.nstro.javaauction.auction.User;
+import us.nstro.javaauction.db.User;
 
 /**
  *  Bid, which represents a user's bid in a specified auction.
@@ -44,7 +44,7 @@ public class Bid {
 
     @Override
     public String toString() {
-        return "Bid { Bidder: " + this.user.getName() + " Price: " + this.price.toString() + "} ";
+        return "Bid { Bidder: " + this.user.getLogin() + " Price: " + this.price.toString() + "} ";
     }
     
 }

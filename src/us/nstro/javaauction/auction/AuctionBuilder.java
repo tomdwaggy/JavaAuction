@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import us.nstro.javaauction.bids.Item;
+import us.nstro.javaauction.db.User;
 
 /**
  *
