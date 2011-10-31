@@ -67,7 +67,7 @@ public class SQLiteConnection implements DatabaseInterface {
      * Executes an SQL query where there is no return result required
      * @param sqlB - a valid SQL command
      * @require the sqlB query not require a result
-     * @throws SQLException 
+     * @throws DatabaseException
      */
     private void doExec(String sql) throws DatabaseException {
         try {
@@ -87,7 +87,7 @@ public class SQLiteConnection implements DatabaseInterface {
      * @param sqlB - a valid SQL query
      * @return a single result from the query
      * @require the sqlB query return only one result, i.e. one cell
-     * @throws SQLException 
+     * @throws DatabaseException
      */
     private Object doGetOneResult(String sql) throws DatabaseException {
         try {
@@ -109,7 +109,7 @@ public class SQLiteConnection implements DatabaseInterface {
      * Executes an SQL query which returns one int value
      * @param sql
      * @return
-     * @throws SQLException 
+     * @throws DatabaseException
      */
     private int doGetOneInt(String sql) throws DatabaseException {
         try {
@@ -131,7 +131,7 @@ public class SQLiteConnection implements DatabaseInterface {
      * Executes an SQL query which returns one long value
      * @param sql
      * @return
-     * @throws SQLException 
+     * @throws DatabaseException
      */
     private long doGetOneLong(String sql) throws DatabaseException {
         try {
@@ -153,7 +153,7 @@ public class SQLiteConnection implements DatabaseInterface {
      * Executes an SQL query which returns one int value
      * @param sql
      * @return
-     * @throws SQLException 
+     * @throws DatabaseException
      */
     private String doGetOneString(String sql) throws DatabaseException {
         try {
@@ -176,7 +176,7 @@ public class SQLiteConnection implements DatabaseInterface {
      * @param sqlB - a valid SQL query which returns one column of results
      * @return - an int array of the results of the query
      * @require the SQL query return only one column of results
-     * @throws SQLException 
+     * @throws DatabaseException
      */
     private int[] doOneColumnInts(String sql) throws DatabaseException {
         try {
@@ -239,7 +239,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * result[4] = isAdmin
    * @param userId
    * @return
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public String[] getUserData(int userId) throws DatabaseException {
     String result[] = new String[5];
@@ -343,7 +343,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * @param auctionId
    * @return 
    */
-//  public String[] getAuctionData(int auctionId) throws SQLException {
+//  public String[] getAuctionData(int auctionId) throws DatabaseException {
 //    
 //    String[] result = new String[12];
 //    result[0] = ""+auctionId;
@@ -367,7 +367,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * @ensure Returns the userId for the owner of the auction specified by auctionId
    * @param auctionId the auction id number to find the owner of
    * @return  Returns the userId for the owner of the auction specified by auctionId
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public int getAuctionOwner(int auctionId) throws DatabaseException {
     return this.doGetOneInt("SELECT owner FROM auctions WHERE rowid='"+auctionId+"';");
@@ -379,7 +379,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * @ensure Returns the title of the auction specified by auctionId
    * @param auctionId the auction id of the auction to find the title of
    * @return the title of the auction specified by auctionId
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public String getAuctionTitle(int auctionId) throws DatabaseException {
     return this.doGetOneString("SELECT title FROM auctions WHERE rowid='"+auctionId+"';");
@@ -391,7 +391,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * @ensure Returns the title of the auction specified by auctionId
    * @param auctionId the auction id of the auction to find the title of
    * @return the title of the auction specified by auctionId
-   * @throws SQLException
+   * @throws DatabaseException
    */
   public String getAuctionDescription(int auctionId) throws DatabaseException {
     return this.doGetOneString("SELECT description FROM auctions WHERE rowid='"+auctionId+"';");
@@ -402,7 +402,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * @require auctionId > 0
    * @param auctionId
    * @return
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public int getAuctionTypeId(int auctionId) throws DatabaseException {
     return this.doGetOneInt("SELECT type FROM auctions WHERE rowid='"+auctionId+"';");
@@ -452,9 +452,9 @@ public class SQLiteConnection implements DatabaseInterface {
      * Returns an array of the links for the auction specified by auctionId
      * @param auctionId
      * @return
-     * @throws SQLException 
+     * @throws DatabaseException
      */
-//  public String[] getAuctionImageLinks(int auctionId) throws SQLException {
+//  public String[] getAuctionImageLinks(int auctionId) throws DatabaseException {
 //    
 //    String linkString = this.doGetOneString("SELECT imageLinks FROM auctions WHERE rowid='"+auctionId+"';");
 //    String[] linkArray = linkString.split(",");
@@ -477,7 +477,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * @param loginName the login name for this user
    * @param loginPassword The un-hashed password for the user,
    * @return the user id associated with this user
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public int addUser(String loginName, String loginPassword) throws DatabaseException {
     
@@ -517,7 +517,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * @param title
    * @param auctionType
    * @return
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public int addAuction(int buyout, int currentAsk, int currentBid, 
   String description, boolean hasBuyout, String imageLinks, 
@@ -539,7 +539,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * Adds an auction to the db and returns the auctionId for that auction
    * @param ownerId
    * @return
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public int addAuction(int ownerId) throws DatabaseException {
     
@@ -629,7 +629,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * @require userExists(userId) == true, newFirstName != null
    * @param userId
    * @param newFirstName
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public void updateUserFirstName(int userId, String newFirstName) throws DatabaseException {
     this.doExec("UPDATE users SET firstName = '"+this.doCleanText(newFirstName)+"' WHERE rowid = '"+userId+"';");
@@ -641,7 +641,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * @require userExists(userId) == true, newLastName != null
    * @param userId
    * @param newFirstName
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public void updateUserLastName(int userId, String newLastName) throws DatabaseException {
     
@@ -654,7 +654,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * @require userExists(userId) == true, newTitle != null
    * @param userId
    * @param newTitle
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public void updateUserTitle(int userId, String newTitle) throws DatabaseException {
     this.doExec("UPDATE users SET title = '"+this.doCleanText(newTitle)+"' WHERE rowid = '"+userId+"';");
@@ -668,7 +668,7 @@ public class SQLiteConnection implements DatabaseInterface {
    *          updated to 0 if isAdminStatus is false, or 1 if isAdminStatus is true
    * @param userId
    * @param isAdminStatus
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public void updateUserIsAdmin(int userId, boolean isAdminStatus) throws DatabaseException {
     int status = isAdminStatus ? 1 : 0;
@@ -683,7 +683,7 @@ public class SQLiteConnection implements DatabaseInterface {
    *          updated to the value given by newLogin
    * @param userId
    * @param newLogin
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public void updateUserLogin(int userId, String newLogin) throws DatabaseException {
     this.doExec("UPDATE users SET login = '"+this.doCleanText(newLogin)+"' WHERE rowid = '"+userId+"';");
@@ -698,7 +698,7 @@ public class SQLiteConnection implements DatabaseInterface {
    *          updated to the value given by newPW
    * @param userId
    * @param newPW
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public void updateUserPassword(int userId, String newPW) throws DatabaseException {
     
@@ -728,7 +728,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * @param password
    * @return true if there is one and only one row matching login and the hash of 
    *          password, false otherwise
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   private boolean loginSuccessful(String login, String password) throws DatabaseException {
     
@@ -746,7 +746,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * @return If 
    * the login/password combination is valid, the userId will be returns, otherwise
    * -1 will be returned.
-   * @throws SQLException 
+   * @throws DatabaseException
    */  
   public int login(String login, String password) throws DatabaseException {
     
@@ -786,7 +786,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * @param userId
    * @param bidAmount
    * @return
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public int addBid(int auctionId, int userId, int bidAmount) throws DatabaseException {
     
@@ -803,7 +803,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * identified by bidId
    * @param bidId
    * @return
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public boolean bidExists(int bidId) throws DatabaseException {
     return (this.doGetOneInt("SELECT COUNT(*) FROM bids WHERE rowid = '"+bidId+"';") == 1);
@@ -813,7 +813,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * returns true if the bid is expired, false if the bid is still active
    * @param bidId
    * @return
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public boolean bidIsExpired(int bidId) throws DatabaseException {
     boolean result = (this.doGetOneInt("SELECT expired FROM bids WHERE rowid='"+bidId+"';")>0) ? true : false;
@@ -824,7 +824,7 @@ public class SQLiteConnection implements DatabaseInterface {
   /**
    * Sets the bid specified by bidId to expired
    * @param bidId
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public void bidSetExpired(int bidId) throws DatabaseException {
     this.doExec("UPDATE bids SET expired = '1' WHERE rowid='"+bidId+"'");
@@ -837,7 +837,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * @ensure  updates the bid amount for the bid specified by bidId
    * @param bidId
    * @param bidAmount
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public void updateBidAmount(int bidId, int bidAmount) throws DatabaseException {
     this.doExec("UPDATE bids SET amount = '"+bidAmount+"' WHERE rowid = '"+bidId+"';");
@@ -847,7 +847,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * returns the bid amount for the bid specified by bidId
    * @param bidId
    * @return
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public int getBidAmount(int bidId) throws DatabaseException {
     return this.doGetOneInt("SELECT amount FROM bids WHERE rowid = '"+bidId+"';");
@@ -857,7 +857,7 @@ public class SQLiteConnection implements DatabaseInterface {
    * returns the bid user for the bid specified by bidId
    * @param bidId
    * @return
-   * @throws SQLException
+   * @throws DatabaseException
    */
   public int getBidUser(int bidId) throws DatabaseException {
     return this.doGetOneInt("SELECT userId FROM bids WHERE rowid = '"+bidId+"';");
@@ -866,7 +866,7 @@ public class SQLiteConnection implements DatabaseInterface {
   /**
    * deletes the bid specified by bidId from the database
    * @param bidId
-   * @throws SQLException 
+   * @throws DatabaseException
    */
   public void deleteBid(int bidId) throws DatabaseException {
     this.doExec("DELETE * FROM bids WHERE rowid = '"+bidId+"';");
