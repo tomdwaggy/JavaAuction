@@ -78,9 +78,11 @@ public class AuctionMainMenu {
           name[2] = this.prompt.getString("Enter title");
 
           userId = this.dbi.addUser(login, password);
-          userManager.addUser(userId, name, login);
+          this.dbi.updateUserFirstName(userId, name[0]);
+          this.dbi.updateUserLastName(userId, name[1]);
+          this.dbi.updateUserTitle(userId, name[2]);
 
-          this.dbi.addUser(login, password);
+          userManager.addUser(userId, name, login);
 
         } catch (DatabaseException ex) {
           Logger.getLogger(AuctionMainMenu.class.getName()).log(Level.SEVERE, null, ex);
@@ -89,9 +91,9 @@ public class AuctionMainMenu {
 
     private void doLogin() {
 
-      int again = 0;
+      int again = 1;
 
-      while(userId < 0 && again != 1) {
+      while(userId < 0 && again != 0) {
       String login = this.prompt.getString("Enter login");
       String password = this.prompt.getString("Enter password");
 
@@ -102,14 +104,18 @@ public class AuctionMainMenu {
 
           if(userId < 0) {
             System.out.println("Username/password combination was not found. Please try again.");
-            again = this.prompt.getInteger("Enter 0 to exit, or any other number to try again:");
+            again = this.prompt.getInteger("Enter 0 to exit, or any other number to try again.");
+          } else {
+            String name[] = this.dbi.getUserName(userId);
+            this.userManager.addUser(userId, name, login);
+            System.out.println("Welcome " + userManager.getUserById(userId).getFirstName());
           }
 
         } catch (DatabaseException ex) {
           Logger.getLogger(AuctionMainMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        } //  end of while
+      } //  end of while
 
     } // end of method
 
@@ -224,13 +230,11 @@ public class AuctionMainMenu {
                 System.out.println("That is not a valid bid for this auction.");
             }
         } catch(DatabaseException dbe) {
-            //System.out.println(dbe.toString());
             dbe.getWrappedException().printStackTrace(System.out);
         }
     }
 
     private void showAuctionMenu() {
-        System.out.println("Welcome " + userManager.getUserById(userId).getfirstName());
         System.out.println("[1] Create a new Auction");
         System.out.println("[2] List open Auctions");
         System.out.println("[3] Auction Information");

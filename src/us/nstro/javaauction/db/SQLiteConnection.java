@@ -1072,7 +1072,6 @@ public class SQLiteConnection implements DatabaseInterface {
     int result = -1; System.out.println("Login successful: " +this.loginSuccessful(login, password));
     if(this.loginSuccessful(login, password)) {
       result = this.doGetOneInt("SELECT rowid FROM users WHERE login='"+this.doCleanText(login)+"' AND password='"+hashed+"';");
-
     }
 
     return result;

@@ -32,7 +32,7 @@ public class TUI_test1 {
   
   private void showMainMenu() {
     if(userId > 0) {
-      System.out.println("Welcome " + userManager.getUserById(userId).getfirstName());
+      System.out.println("Welcome " + userManager.getUserById(userId).getFirstName());
     }
     System.out.println();
     System.out.println();

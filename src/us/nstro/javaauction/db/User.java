@@ -222,7 +222,7 @@ public class User {
    * @ensure returns this users first name
    * @return this users first name
    */
-  public String getfirstName() {
+  public String getFirstName() {
     return this.firstName;
   }
   
