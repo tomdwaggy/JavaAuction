@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import us.nstro.javaauction.auction.AscendingAuctionBuilder;
 import us.nstro.javaauction.auction.Auction;
 import us.nstro.javaauction.auction.AuctionManager;
+import us.nstro.javaauction.bids.Bid;
 
 import us.nstro.javaauction.bids.Item;
 import us.nstro.javaauction.bids.Price;
@@ -145,19 +146,18 @@ public class AuctionMainMenu {
             builder.setAuctionDescription(this.prompt.getString("Auction description"));
             builder.setProduct(Item.createItem(this.prompt.getString("Item name")));
             builder.setEndDate(this.prompt.getDate("Ending Date"));
-            float minimumBid = this.prompt.getFloat("Minimum bid");
-            builder.setMinimumBid(new Price(minimumBid));
+            Price minimumBid = Price.fromFloat(this.prompt.getFloat("Minimum bid"));
+            builder.setMinimumBid(minimumBid);
             int auctionID = this.dbi.addAuction(userId);
             Auction auction = this.auctionManager.createAuction(auctionID, builder);
 
+            this.dbi.updateAuctionType(auctionID, 0);
             this.dbi.updateAuctionTitle(auctionID, auction.getInfo().getName());
             this.dbi.updateAuctionDescription(auctionID, auction.getInfo().getDescription());
-            this.dbi.updateAuctionCurrentBid(auctionID, Math.round(minimumBid * 100));
+            this.dbi.updateAuctionCurrentAsking(auctionID, minimumBid.cents());
+            this.dbi.updateAuctionCurrentBid(auctionID, minimumBid.cents());
             this.dbi.updateAuctionStartTime(auctionID, new Date().getTime());
             this.dbi.updateAuctionStopTime(auctionID, auction.getInfo().getEndDate().getTime());
-
-        } catch (IOException ioe) {
-            System.out.println(ioe.toString());
         } catch (DatabaseException dbe) {
             System.out.println(dbe.toString());
         }
@@ -201,7 +201,32 @@ public class AuctionMainMenu {
     }
 
     private void doBidAuction() {
-        
+        int choice = this.prompt.getInteger("Auction ID to bid on");
+        Auction auction = this.auctionManager.getAuction(choice);
+
+        if(auction == null) {
+            System.out.println("That is not a valid auction ID.");
+            return;
+        }
+
+        System.out.println("Valid bidding prices: " + auction.getValidPrices().toString());
+        Price price = Price.fromFloat(this.prompt.getFloat("How much do you want to bid?"));
+
+        try {
+            if(auction.getValidPrices().contains(price)) {
+                System.out.println("Placing bid of " + price.toString() + " on auction " + choice + ".");
+                boolean yesno = this.prompt.getYesNo("Really place the bid?");
+                if(yesno) {
+                    auction.placeBid(new Bid(this.userManager.getUserById(this.userId), auction, price));
+                    this.dbi.addBid(choice, this.userId, price.cents());
+                }
+            } else {
+                System.out.println("That is not a valid bid for this auction.");
+            }
+        } catch(DatabaseException dbe) {
+            //System.out.println(dbe.toString());
+            dbe.getWrappedException().printStackTrace(System.out);
+        }
     }
 
     private void showAuctionMenu() {

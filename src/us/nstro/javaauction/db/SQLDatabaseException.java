@@ -23,4 +23,9 @@ public class SQLDatabaseException extends DatabaseException {
         return this.wrappedException;
     }
 
+    @Override
+    public String toString() {
+        return "SQLDatabaseException: " + this.wrappedException.toString();
+    }
+
 }

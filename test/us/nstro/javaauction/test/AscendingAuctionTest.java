@@ -8,13 +8,12 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import us.nstro.javaauction.auction.Auction;
-import us.nstro.javaauction.auction.AuctionBuilder;
 import us.nstro.javaauction.auction.AscendingAuctionBuilder;
 
-import us.nstro.javaauction.auction.User;
 import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Item;
 import us.nstro.javaauction.bids.Price;
+import us.nstro.javaauction.db.User;
 
 /**
  * Test the Ascending Auction.
@@ -28,6 +27,7 @@ public class AscendingAuctionTest {
 
     public AscendingAuctionTest() {
         this.builder = new AscendingAuctionBuilder();
+
         builder.setMinimumBid(new Price(5000));
         builder.setAuctionName("Big kitty!");
         builder.setAuctioneer(User.createUser("Vera Stalks"));
@@ -49,7 +49,7 @@ public class AscendingAuctionTest {
     @Test
     public void testInfo() {
         assertEquals(this.auction.getInfo().getName(), "Big kitty!");
-        assertEquals(this.auction.getInfo().getAuctioneer().getName(), "Vera Stalks");
+        assertEquals(this.auction.getInfo().getAuctioneer().getLogin(), "Vera Stalks");
         assertEquals(this.auction.getInfo().getProducts().size(), 1);
         assertEquals(this.auction.getInfo().getProducts().iterator().next().getName(), "An oversized Maine coon");
     }

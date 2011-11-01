@@ -8,6 +8,7 @@ import us.nstro.javaauction.auction.AuctionBuilder;
 import us.nstro.javaauction.auction.DutchAuctionBuilder;
 import us.nstro.javaauction.auction.SealedFirstBidAuctionBuilder;
 import us.nstro.javaauction.bids.Item;
+import us.nstro.javaauction.bids.Price;
 import us.nstro.javaauction.db.DatabaseException;
 import us.nstro.javaauction.db.DatabaseInterface;
 import us.nstro.javaauction.db.User;
@@ -36,6 +37,7 @@ public class AuctionDatabaseLink {
     private AuctionBuilder getAscendingAuctionBuilder(Integer auctionID) throws DatabaseException {
         AscendingAuctionBuilder builder = new AscendingAuctionBuilder();
         this.setCommonAuctionParams(auctionID, builder);
+        builder.setMinimumBid(new Price(this.db.getAuctionCurrentBid(auctionID)));
         return builder;
     }
 

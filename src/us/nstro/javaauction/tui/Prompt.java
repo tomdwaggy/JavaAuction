@@ -41,22 +41,41 @@ public class Prompt {
         } catch(IOException ioe) {
             return null;
         } catch(NumberFormatException nfe) {
-            return -1;
+            return null;
         }
     }
 
-    public Float getFloat(String prompt) throws IOException {
+    public Float getFloat(String prompt) {
         System.out.print(prompt + " (e.g. 1.92): ");
-        return Float.parseFloat(this.read.readLine());
+        try {
+            return Float.parseFloat(this.read.readLine());
+        } catch(IOException ioe) {
+            return null;
+        } catch(NumberFormatException nfe) {
+            return null;
+        }
     }
 
-    public Date getDate(String prompt) throws IOException {
+    public Boolean getYesNo(String prompt) {
+        System.out.print(prompt + " [Y or N]: ");
+        try {
+            return this.read.readLine().equalsIgnoreCase("Y");
+        } catch(IOException ioe) {
+            return null;
+        } catch(NumberFormatException nfe) {
+            return null;
+        }
+    }
+
+    public Date getDate(String prompt) {
         try {
             String format = "MM-dd-yyyy";
             System.out.print(prompt + " (" + format + "): ");
             Date date = new SimpleDateFormat(format, Locale.ENGLISH).parse(this.read.readLine());
             return date;
         } catch(ParseException pe) {
+            return new Date();
+        } catch(IOException ioe) {
             return new Date();
         }
     }
