@@ -21,6 +21,22 @@ public class AuctionDatabaseLink {
 
     private DatabaseInterface db;
 
+    public enum AuctionType {
+        
+        ASCENDING(0), DUTCH(1), SEALED(2);
+
+        private int index;
+
+        private AuctionType(int index) {
+            this.index = index;
+        }
+
+        public boolean matches(int other) {
+            return this.index == other;
+        }
+
+    }
+
     public AuctionDatabaseLink(DatabaseInterface db) {
         this.db = db;
     }
@@ -57,14 +73,14 @@ public class AuctionDatabaseLink {
         int auctionType = this.db.getAuctionTypeId(auctionID);
         AuctionBuilder builder;
         
-        if(auctionType == 0)
+        if(AuctionType.ASCENDING.matches(auctionType))
             builder = this.getAscendingAuctionBuilder(auctionID);
-        else if(auctionType == 1)
+        else if(AuctionType.DUTCH.matches(auctionType))
             builder = this.getDutchAuctionBuilder(auctionID);
-        else if(auctionType == 2)
+        else if(AuctionType.SEALED.matches(auctionType))
             builder = this.getSealedFirstBidAuctionBuilder(auctionID);
         else
-            throw new UnsupportedOperationException("No builder for Auction Type " + auctionType);
+            throw new UnsupportedOperationException("Invalid Auction Type: " + auctionType);
 
         builder.setAuctioneer(auctioneer);
         return builder;
