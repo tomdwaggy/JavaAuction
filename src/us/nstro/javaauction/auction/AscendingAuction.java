@@ -55,7 +55,7 @@ public class AscendingAuction extends AbstractAuction {
      */
     public void placeBid(Bid bid) {
         if(this.getValidPrices().contains(bid.getPrice())) {
-            this.validPrices = new Minimum<Price>(bid.getPrice().next(new Price(1)));
+            this.validPrices = new Minimum<Price>(bid.getPrice().next(Price.fromInteger(1)));
             this.winningBid = bid;
         }
     }

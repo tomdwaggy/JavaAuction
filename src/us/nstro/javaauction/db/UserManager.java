@@ -78,6 +78,28 @@ public final class UserManager {
     }
     return result;
   }
+
+ /**
+   * Returns a User specified by userId
+   * @require userId > 0
+   * @ensure Returns User specified by userId
+   * @param userId the user id for the user being requested
+   * @return user specified by userId
+   */
+  public boolean containsUserId(int userId) {
+
+    Iterator<User> iter = userList.iterator();
+    User result = null;
+    boolean foundIt = false;
+
+    while(iter.hasNext() && !foundIt) {
+      result = iter.next();
+
+      if(result.getUserId() == userId)
+        foundIt = true;
+    }
+    return foundIt;
+  }
   
   /**
    * Returns a User specified by userId

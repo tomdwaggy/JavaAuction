@@ -1,6 +1,5 @@
 package us.nstro.javaauction.tui;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +18,7 @@ import us.nstro.javaauction.db.UserManager;
 import us.nstro.javaauction.db.User;
 
 /**
+ * Main Text User Interface of the Auction client.
  *
  * @author bbecker
  */
@@ -65,46 +65,56 @@ public class AuctionMainMenu {
     }
 
     private void doCreateUserAccount() {
-
       String[] name = {"FirstName", "LastName", "Title"};
+      String login = "";
+      boolean unique = false;
 
-       String login = this.prompt.getString("Enter the user login name");
-       String password =  this.prompt.getString("Enter the user password");
+      try {
 
-       try {
-
-          name[0] = this.prompt.getString("Enter first name");
-          name[1] = this.prompt.getString("Enter last name");
-          name[2] = this.prompt.getString("Enter title");
-
-          userId = this.dbi.addUser(login, password);
-          this.dbi.updateUserFirstName(userId, name[0]);
-          this.dbi.updateUserLastName(userId, name[1]);
-          this.dbi.updateUserTitle(userId, name[2]);
-
-          userManager.addUser(userId, name, login);
-
-        } catch (DatabaseException ex) {
-          Logger.getLogger(AuctionMainMenu.class.getName()).log(Level.SEVERE, null, ex);
+        while(!unique) {
+            login = this.prompt.getString("Enter the user login name");
+            unique = this.dbi.uniqueLogin(login);
+            if(!unique) {
+                System.out.println("Sorry, but the name " + login + " has been taken.");
+                boolean tryAgain = this.prompt.getYesNo("Try again?");
+                if(!tryAgain)
+                    return;
+            }
         }
+
+        String password =  this.prompt.getString("Enter the user password");
+
+        name[0] = this.prompt.getString("Enter first name");
+        name[1] = this.prompt.getString("Enter last name");
+        name[2] = this.prompt.getString("Enter title");
+
+        userId = this.dbi.addUser(login, password);
+        this.dbi.updateUserFirstName(userId, name[0]);
+        this.dbi.updateUserLastName(userId, name[1]);
+        this.dbi.updateUserTitle(userId, name[2]);
+
+        userManager.addUser(userId, name, login);
+
+      } catch (DatabaseException ex) {
+        Logger.getLogger(AuctionMainMenu.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }
 
     private void doLogin() {
 
-      int again = 1;
+      boolean again = true;
 
-      while(userId < 0 && again != 0) {
+      while(userId < 0 && again) {
       String login = this.prompt.getString("Enter login");
       String password = this.prompt.getString("Enter password");
-
 
         try {
 
           userId = this.dbi.login(login, password);
 
           if(userId < 0) {
-            System.out.println("Username/password combination was not found. Please try again.");
-            again = this.prompt.getInteger("Enter 0 to exit, or any other number to try again.");
+            System.out.println("Username or Password not valid.");
+            again = this.prompt.getYesNo("Try again?");
           } else {
             String name[] = this.dbi.getUserName(userId);
             this.userManager.addUser(userId, name, login);
@@ -119,10 +129,37 @@ public class AuctionMainMenu {
 
     } // end of method
 
+    private User getOrReadUser(int userID) throws DatabaseException {
+        if(!this.userManager.containsUserId(userID)) {
+            String login = this.dbi.getUserLogin(userID);
+            String[] name = this.dbi.getUserName(userID);
+            this.userManager.addUser(userID, name, login);
+        }
+        return this.userManager.getUserById(userID);
+    }
+
     private User readAuctioneerFor(int auctionID) throws DatabaseException {
         int auctioneerID = this.dbi.getAuctionOwner(auctionID);
-        this.userManager.addUser(auctioneerID, new String[] {"", "", ""}, "NILL");
-        return this.userManager.getUserById(auctioneerID);
+        return this.getOrReadUser(auctioneerID);
+    }
+
+    private User readBidderFor(int bidID) throws DatabaseException {
+        int bidderID = this.dbi.getBidUserId(bidID);
+        return this.getOrReadUser(bidderID);
+    }
+
+    private void readBidsForAuction(Auction auction) throws DatabaseException {
+        int auctionID = auction.getID();
+        if(this.dbi.auctionHasBids(auctionID)) {
+            for(int bidID : this.dbi.getBidsForAuction(auctionID)) {
+                User bidder = this.readBidderFor(bidID);
+                Price price = Price.fromInteger(this.dbi.getBidAmount(bidID));
+                Bid bid = new Bid(bidder, auction, price);
+                if(auction.getValidPrices().contains(price)) {
+                    auction.placeBid(bid);
+                }
+            }
+        }
     }
 
     private void readAuctionsDatabase() {
@@ -131,7 +168,9 @@ public class AuctionMainMenu {
             for(int auctionID : this.dbi.getAuctionAllIds()) {
                 if(this.dbi.getAuctionEnabled(auctionID)) {
                     User auctioneer = this.readAuctioneerFor(auctionID);
-                    this.auctionManager.createAuction(auctionID, loader.getAuctionBuilder(auctionID, auctioneer));
+                    Auction auction = this.auctionManager.createAuction(auctionID, loader.getAuctionBuilder(auctionID, auctioneer));
+                    if(auction.isOpen())
+                        this.readBidsForAuction(auction);
                 }
             }
         } catch (DatabaseException dbe) {
@@ -198,7 +237,18 @@ public class AuctionMainMenu {
         System.out.println("Auction name: " + auction.getInfo().getName());
         System.out.println("Auction description: " + auction.getInfo().getDescription());
         System.out.println("Auctioneer: " + auction.getInfo().getAuctioneer().getLogin());
-        System.out.println("Product(s): ");
+        // System.out.println("Product(s): ");
+        
+        if(auction.getWinningBids().size() == 1) {
+            Bid winning = auction.getWinningBids().iterator().next();
+            System.out.println("Current Winner: " + winning.getUser().getLogin());
+        } else if(auction.getWinningBids().size() > 1) {
+            System.out.println("Current Winner(s): ");
+            for(Bid winning : auction.getWinningBids())
+                System.out.println(winning.getUser().getLogin());
+        }
+
+        System.out.println("Current Valid Bids: " + auction.getValidPrices().toString());
 
         for(Item i : auction.getInfo().getProducts())
             System.out.println(i.getID() + " - " + i.getName());

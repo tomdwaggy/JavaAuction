@@ -16,6 +16,15 @@ public class Price implements Comparable<Price> {
         this.cents = cents;
     }
 
+    /**
+     *  Create a new price for the specified amount.
+     *
+     *  @require: amount > 0
+     */
+    public static Price fromInteger(Integer cents) {
+        return new Price(cents);
+    }
+
    /**
      *  Create a new price for the specified floating point amount in dollars.
      *

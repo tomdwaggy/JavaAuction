@@ -64,18 +64,29 @@ public interface DatabaseInterface {
 
   /**
    * Adds a user to the database and returns the userId for that user.<br>
+   * The login name must be unique. If it not, the return value is -1.<br>
    * The only information entered for the user with this method, being login and password,
    * this method is essentially a way to enter the user to establish the userId. All other
    * user data is expected to be entered with other user methods using the returned
    * userId.
-   * @require loginName != null, loginPassword != null
+   * @require loginName != null, this.uniqueLogin(loginName) == true; loginPassword != null
    * @ensure Adds a user to the database and returns the userId for that user
    * @param loginName the login name for this user
    * @param loginPassword The un-hashed password for the user,
-   * @return the user id associated with this user
+   * @return the user id associated with this user, or -1 if login name is not unique
    * @throws DatabaseException
    */
   int addUser(String loginName, String loginPassword) throws DatabaseException;
+
+  /**
+   * Returns true if there are no occurrences of loginName in the database
+   * @require loginName != null
+   * @ensure returns true if there are no occurrences of loginName in the database, false otherwise
+   * @param loginName
+   * @return
+   * @throws DatabaseException
+   */
+  public boolean uniqueLogin(String loginName) throws DatabaseException;
 
   /**
    * returns the number of auctions in the database
@@ -676,5 +687,40 @@ public interface DatabaseInterface {
    * @ensure - returns true if userId is found in the database, false otherwise
    */
   boolean userExists(int userId) throws DatabaseException;
+
+  /**
+   * Returns the user id for the user specified by userLogin, or -1 if there
+   * is not 1 and only 1 occurrence of userLogin in the database
+   * @require userLogin != null
+   * @ensure Returns the user id for the user specified by userLogin, or -1 if there
+   * is not 1 and only 1 occurrence of userLogin in the database
+   * @param userLogin
+   * @return
+   * @throws DatabaseException
+   */
+  public int getUserIdByLogin(String userLogin) throws DatabaseException;
+
+  /**
+   * Returns an array of bidId's for the bids for the auction given by auctionId
+   * @require auctionExists(auctionId) == true, this.auctionHasBids(auctionId) == true
+   * @ensure Returns an array of bidId's for the bids for the auction given by auctionId
+   * @param auctionId
+   * @return
+   * @throws DatabaseException
+   */
+  public int[] getBidsForAuction(int auctionId) throws DatabaseException ;
+
+  /**
+   * Returns true if the auction specified by auctionId has bids associated with it,
+   * false otherwise
+   * @require auctionExists(auctionId) == true
+   * @ensure Returns true if the auction specified by auctionId has bids associated with it,
+   * false otherwise
+   * @param auctionId
+   * @return
+   * @throws DatabaseException
+   */
+  public boolean auctionHasBids(int auctionId) throws DatabaseException;
+
 
 }

@@ -15,6 +15,12 @@ import us.nstro.javaauction.type.Selection;
  * @author bbecker
  */
 public interface Auction {
+
+    /**
+     * Get the valid prices for a bid in this auction.
+     *
+     * @return a Selection of valid prices
+     */
     public Selection<Price> getValidPrices();
 
     /**

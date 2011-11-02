@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  *
  * @author Steven Bolin
@@ -480,7 +479,7 @@ public class SQLiteConnection implements DatabaseInterface {
    */
   @Override
   public boolean auctionExists(int auctionId) throws DatabaseException {
-    return this.doGetOneInt("SELECT COUNT(rowid) FROM auctions WHERE rowid = '"+auctionId+"';") > 0;
+    return this.doGetOneInt("SELECT COUNT(*) FROM auctions WHERE rowid = '"+auctionId+"';") > 0;
   }
 
   /**
@@ -609,15 +608,16 @@ public class SQLiteConnection implements DatabaseInterface {
 
   /**
    * Adds a user to the database and returns the userId for that user.<br>
+   * The login name must be unique. If it not, the return value is -1.<br>
    * The only information entered for the user with this method, being login and password,
    * this method is essentially a way to enter the user to establish the userId. All other
    * user data is expected to be entered with other user methods using the returned
    * userId.
-   * @require loginName != null, loginPassword != null
+   * @require loginName != null, this.uniqueLogin(loginName) == true; loginPassword != null
    * @ensure Adds a user to the database and returns the userId for that user
    * @param loginName the login name for this user
    * @param loginPassword The un-hashed password for the user,
-   * @return the user id associated with this user
+   * @return the user id associated with this user, or -1 if login name is not unique
    * @throws DatabaseException
    */
   @Override
@@ -625,12 +625,27 @@ public class SQLiteConnection implements DatabaseInterface {
 
     long tStamp = new Date().getTime();
     String pwHash = this.doHashPassword(loginPassword);
+    int result = -1;
+    if(this.uniqueLogin(loginName)) {
+      this.doExec("INSERT INTO users VALUES(1,'"+tStamp+"', 'No first name entered yet'"
+              + ", -1, 'No last name entered yet', '"+
+              this.doCleanText(loginName)+"', '"+pwHash+"', '');");
 
-    this.doExec("INSERT INTO users VALUES(1,'"+tStamp+"', 'No first name entered yet'"
-            + ", -1, 'No last name entered yet', '"+
-            this.doCleanText(loginName)+"', '"+pwHash+"', '');");
+      result = this.doGetOneInt("SELECT rowid FROM users WHERE timestamp='"+tStamp+"';");
+    }
+    return result;
+  }
 
-    return this.doGetOneInt("SELECT rowid FROM users WHERE timestamp='"+tStamp+"';");
+  /**
+   * Returns true if there are no occurrences of loginName in the database
+   * @require loginName != null
+   * @ensure returns true if there are no occurrences of loginName in the database, false otherwise
+   * @param loginName
+   * @return
+   * @throws DatabaseException
+   */
+  public boolean uniqueLogin(String loginName) throws DatabaseException {
+    return this.doGetOneInt("SELECT COUNT(rowid) from users WHERE login ='"+loginName+"';") == 0;
   }
 
   /**
@@ -1072,6 +1087,7 @@ public class SQLiteConnection implements DatabaseInterface {
     int result = -1; System.out.println("Login successful: " +this.loginSuccessful(login, password));
     if(this.loginSuccessful(login, password)) {
       result = this.doGetOneInt("SELECT rowid FROM users WHERE login='"+this.doCleanText(login)+"' AND password='"+hashed+"';");
+
     }
 
     return result;
@@ -1125,7 +1141,7 @@ public class SQLiteConnection implements DatabaseInterface {
 
     long tStamp = new Date().getTime();
 
-    this.doExec("INSERT INTO bids VALUES('0', "+tStamp+"','"+auctionId+"','"+userId+"', '"+bidAmount+"');");
+    this.doExec("INSERT INTO bids VALUES('0', '0', '"+tStamp+"','"+auctionId+"','"+userId+"', '"+bidAmount+"');");
 
     return this.doGetOneInt("SELECT rowid FROM bids WHERE timestamp = '"+tStamp+"';");
 
@@ -1243,4 +1259,54 @@ public class SQLiteConnection implements DatabaseInterface {
     else
       this.doExec("UPDATE bids SET enabled = 0 WHERE rowid = '"+bidId+"';");
   }
+
+  /**
+   * Returns the user id for the user specified by userLogin, or -1 if there
+   * is not 1 and only 1 occurrence of userLogin in the database
+   * @require userLogin != null
+   * @ensure Returns the user id for the user specified by userLogin, or -1 if there
+   * is not 1 and only 1 occurrence of userLogin in the database
+   * @param userLogin
+   * @return
+   * @throws DatabaseException
+   */
+  public int getUserIdByLogin(String userLogin) throws DatabaseException {
+    int result = -1;
+
+    if(this.doGetOneInt("SELECT COUNT(*) from users WHERE login='"+this.doCleanText(userLogin)+"';") == 1) {
+      result = this.doGetOneInt("SELECT rowid FROM users WHERE login='"+this.doCleanText(userLogin)+"';");
+    }
+    return result;
+  }
+
+  /**
+   * Returns an array of bidId's for the bids for the auction given by auctionId
+   * @require auctionExists(auctionId) == true, this.auctionHasBids(auctionId) == true
+   * @ensure Returns an array of bidId's for the bids for the auction given by auctionId
+   * @param auctionId
+   * @return
+   * @throws DatabaseException
+   */
+  public int[] getBidsForAuction(int auctionId) throws DatabaseException {
+
+    return this.doOneColumnInts("SELECT rowid FROM bids WHERE auctionId = '"+auctionId+"' ORDER BY timestamp ASC;");
+  }
+
+  /**
+   * Returns true if the auction specified by auctionId has bids associated with it,
+   * false otherwise
+   * @require auctionExists(auctionId) == true
+   * @ensure Returns true if the auction specified by auctionId has bids associated with it,
+   * false otherwise
+   * @param auctionId
+   * @return
+   * @throws DatabaseException
+   */
+  public boolean auctionHasBids(int auctionId) throws DatabaseException {
+    return this.doGetOneInt("SELECT COUNT(*) FROM bids WHERE auctionId = '"+auctionId+"';")>0;
+  }
+
+
+
+
 } // end of class

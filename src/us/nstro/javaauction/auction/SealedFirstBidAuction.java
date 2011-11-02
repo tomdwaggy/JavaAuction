@@ -61,7 +61,7 @@ public class SealedFirstBidAuction extends AbstractAuction {
     public void placeBid(Bid bid) {
         if(this.sealedValidPrices.contains(bid.getPrice())) {
             this.winningBid = bid;
-            this.sealedValidPrices = new Minimum<Price>(bid.getPrice().next(new Price(1)));
+            this.sealedValidPrices = new Minimum<Price>(bid.getPrice().next(Price.fromInteger(1)));
         }
     }
 
