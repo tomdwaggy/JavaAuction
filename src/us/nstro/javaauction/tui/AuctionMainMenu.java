@@ -82,7 +82,7 @@ public class AuctionMainMenu {
             }
         }
 
-        String password =  this.prompt.getString("Enter the user password");
+        String password =  this.prompt.getPassword("Enter the user password");
 
         name[0] = this.prompt.getString("Enter first name");
         name[1] = this.prompt.getString("Enter last name");
@@ -106,7 +106,7 @@ public class AuctionMainMenu {
 
       while(userId < 0 && again) {
       String login = this.prompt.getString("Enter login");
-      String password = this.prompt.getString("Enter password");
+      String password = this.prompt.getPassword("Enter password");
 
         try {
 
@@ -183,6 +183,15 @@ public class AuctionMainMenu {
       this.userId = -1;
     }
 
+    private void updateAuction(Auction auction) throws DatabaseException {
+        int auctionID = auction.getID();
+        this.dbi.updateAuctionType(auctionID, 0);
+        this.dbi.updateAuctionTitle(auctionID, auction.getInfo().getName());
+        this.dbi.updateAuctionDescription(auctionID, auction.getInfo().getDescription());
+        this.dbi.updateAuctionStartTime(auctionID, new Date().getTime());
+        this.dbi.updateAuctionStopTime(auctionID, auction.getInfo().getEndDate().getTime());
+    }
+
     private void doCreateAscendingAuction() {
         AscendingAuctionBuilder builder = new AscendingAuctionBuilder();
         try {
@@ -193,16 +202,12 @@ public class AuctionMainMenu {
             builder.setEndDate(this.prompt.getDate("Ending Date"));
             Price minimumBid = Price.fromFloat(this.prompt.getFloat("Minimum bid"));
             builder.setMinimumBid(minimumBid);
+            
             int auctionID = this.dbi.addAuction(userId);
             Auction auction = this.auctionManager.createAuction(auctionID, builder);
-
-            this.dbi.updateAuctionType(auctionID, 0);
-            this.dbi.updateAuctionTitle(auctionID, auction.getInfo().getName());
-            this.dbi.updateAuctionDescription(auctionID, auction.getInfo().getDescription());
+            this.updateAuction(auction);
             this.dbi.updateAuctionCurrentAsking(auctionID, minimumBid.cents());
             this.dbi.updateAuctionCurrentBid(auctionID, minimumBid.cents());
-            this.dbi.updateAuctionStartTime(auctionID, new Date().getTime());
-            this.dbi.updateAuctionStopTime(auctionID, auction.getInfo().getEndDate().getTime());
         } catch (DatabaseException dbe) {
             System.out.println(dbe.toString());
         }
@@ -237,15 +242,15 @@ public class AuctionMainMenu {
         System.out.println("Auction name: " + auction.getInfo().getName());
         System.out.println("Auction description: " + auction.getInfo().getDescription());
         System.out.println("Auctioneer: " + auction.getInfo().getAuctioneer().getLogin());
-        // System.out.println("Product(s): ");
         
         if(auction.getWinningBids().size() == 1) {
             Bid winning = auction.getWinningBids().iterator().next();
             System.out.println("Current Winner: " + winning.getUser().getLogin());
         } else if(auction.getWinningBids().size() > 1) {
-            System.out.println("Current Winner(s): ");
+            System.out.println("Current Winners: ");
             for(Bid winning : auction.getWinningBids())
-                System.out.println(winning.getUser().getLogin());
+                System.out.print(winning.getUser().getLogin() + " ");
+            System.out.println();
         }
 
         System.out.println("Current Valid Bids: " + auction.getValidPrices().toString());

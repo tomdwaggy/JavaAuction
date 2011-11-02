@@ -40,12 +40,13 @@ public class SealedFirstBidAuction extends AbstractAuction {
     }
 
     /**
-     * Calculates the winning bid for this auction.
+     * Calculates the winning bid for this auction. As it is a sealed bid, it
+     * will always return empty list when the auction is open.
      *
      * @ensure: A valid bid has been placed.
      */
     public Collection<Bid> getWinningBids() {
-        if(this.winningBid != null)
+        if(this.winningBid != null && !this.isOpen())
             return Collections.singleton(this.winningBid);
         else
             return Collections.emptyList();

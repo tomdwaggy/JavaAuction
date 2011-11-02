@@ -6,6 +6,7 @@
 package us.nstro.javaauction.tui;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
@@ -34,14 +35,25 @@ public class Prompt {
         }
     }
 
+    public String getPassword(String prompt) {
+        char[] passwd;
+        Console cons;
+        if ((cons = System.console()) != null &&
+            (passwd = cons.readPassword("%s: ", prompt)) != null) {
+            return new String(passwd);
+        } else {
+            return this.getString(prompt);
+        }
+    }
+
     public Integer getInteger(String prompt) {
         System.out.print(prompt + ": ");
         try {
             return Integer.parseInt(this.read.readLine());
         } catch(IOException ioe) {
-            return null;
+            return -1;
         } catch(NumberFormatException nfe) {
-            return null;
+            return -1;
         }
     }
 
@@ -50,9 +62,9 @@ public class Prompt {
         try {
             return Float.parseFloat(this.read.readLine());
         } catch(IOException ioe) {
-            return null;
+            return -1.0f;
         } catch(NumberFormatException nfe) {
-            return null;
+            return -1.0f;
         }
     }
 
@@ -61,9 +73,9 @@ public class Prompt {
         try {
             return this.read.readLine().equalsIgnoreCase("Y");
         } catch(IOException ioe) {
-            return null;
+            return false;
         } catch(NumberFormatException nfe) {
-            return null;
+            return false;
         }
     }
 
