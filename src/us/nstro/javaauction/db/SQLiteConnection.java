@@ -616,15 +616,14 @@ public class SQLiteConnection implements DatabaseInterface {
    * @require loginName != null, this.uniqueLogin(loginName) == true; loginPassword != null
    * @ensure Adds a user to the database and returns the userId for that user
    * @param loginName the login name for this user
-   * @param loginPassword The un-hashed password for the user,
+   * @param pwHash The hashed password for the user,
    * @return the user id associated with this user, or -1 if login name is not unique
    * @throws DatabaseException
    */
   @Override
-  public int addUser(String loginName, String loginPassword) throws DatabaseException {
+  public int addUser(String loginName, String pwHash) throws DatabaseException {
 
     long tStamp = new Date().getTime();
-    String pwHash = this.doHashPassword(loginPassword);
     int result = -1;
     if(this.uniqueLogin(loginName)) {
       this.doExec("INSERT INTO users VALUES(1,'"+tStamp+"', 'No first name entered yet'"
@@ -1027,25 +1026,12 @@ public class SQLiteConnection implements DatabaseInterface {
    * @ensure the value of the password field of the user indicated by userId is
    *          updated to the value given by newPW
    * @param userId
-   * @param newPW
+   * @param newHash
    * @throws DatabaseException
    */
   @Override
-  public void updateUserPassword(int userId, String newPW) throws DatabaseException {
-
-    String hashed = this.doHashPassword(newPW);
-    this.doExec("UPDATE users SET password = '"+hashed+"' WHERE rowid = '"+userId+"';");
-  }
-
-  /**
-   * Hashes the password for use in this class
-   * @param password
-   * @return
-   */
-  private String doHashPassword(String password) throws DatabaseException {
-
-    BCrypt crypt = new BCrypt();
-    return BCrypt.hashpw(password, this.getSalt());
+  public void updateUserPassword(int userId, String newHash) throws DatabaseException {
+    this.doExec("UPDATE users SET password = '"+ newHash +"' WHERE rowid = '"+ newHash +"';");
   }
 
   /**
@@ -1061,9 +1047,9 @@ public class SQLiteConnection implements DatabaseInterface {
    *          password, false otherwise
    * @throws DatabaseException
    */
-  private boolean loginSuccessful(String login, String password) throws DatabaseException {
+  private boolean loginSuccessful(String login, String hashed) throws DatabaseException {
 
-    String hashed = this.doHashPassword(password);//System.out.println("SELECT COUNT(rowid) FROM users WHERE login='"+this.doCleanText(login)+"' AND password='"+hashed+"';");
+    //System.out.println("SELECT COUNT(rowid) FROM users WHERE login='"+this.doCleanText(login)+"' AND password='"+hashed+"';");
 
     return ((this.doGetOneInt("SELECT COUNT(rowid) FROM users WHERE login='"+this.doCleanText(login)+"' AND password='"+hashed+"';")) == 1);
   }
@@ -1074,18 +1060,18 @@ public class SQLiteConnection implements DatabaseInterface {
    * the userId will be returned, otherwise -1 will be returned.
    * @require login != null, password != null
    * @param login the login submitted by the user
-   * @param password the un-hashed password submitted by the user
+   * @param hashed the hashed password submitted by the user
    * @return If
    * the login/password combination is valid, the userId will be returns, otherwise
    * -1 will be returned.
    * @throws DatabaseException
    */
   @Override
-  public int login(String login, String password) throws DatabaseException {
+  public int login(String login, String hashed) throws DatabaseException {
 
-    String hashed = this.doHashPassword(password);
-    int result = -1; System.out.println("Login successful: " +this.loginSuccessful(login, password));
-    if(this.loginSuccessful(login, password)) {
+    int result = -1;
+    // System.out.println("Login successful: " +this.loginSuccessful(login, hashed));
+    if(this.loginSuccessful(login, hashed)) {
       result = this.doGetOneInt("SELECT rowid FROM users WHERE login='"+this.doCleanText(login)+"' AND password='"+hashed+"';");
 
     }
