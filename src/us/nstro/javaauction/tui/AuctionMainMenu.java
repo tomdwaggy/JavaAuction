@@ -10,7 +10,6 @@ import us.nstro.javaauction.bids.Bid;
 
 import us.nstro.javaauction.bids.Item;
 import us.nstro.javaauction.bids.Price;
-import us.nstro.javaauction.db.BCrypt;
 import us.nstro.javaauction.db.DatabaseException;
 import us.nstro.javaauction.db.DatabaseInterface;
 import us.nstro.javaauction.db.SQLiteConnection;
@@ -83,13 +82,13 @@ public class AuctionMainMenu {
             }
         }
 
-        String hash =  BCrypt.hashpw(this.prompt.getPassword("Enter the user password"), this.dbi.getSalt());
+        String password =  this.prompt.getPassword("Enter the user password");
 
         name[0] = this.prompt.getString("Enter first name");
         name[1] = this.prompt.getString("Enter last name");
         name[2] = this.prompt.getString("Enter title");
 
-        userId = this.dbi.addUser(login, hash);
+        userId = this.dbi.addUser(login, password);
         this.dbi.updateUserFirstName(userId, name[0]);
         this.dbi.updateUserLastName(userId, name[1]);
         this.dbi.updateUserTitle(userId, name[2]);
@@ -107,12 +106,11 @@ public class AuctionMainMenu {
 
       while(userId < 0 && again) {
       String login = this.prompt.getString("Enter login");
-      
+      String password = this.prompt.getPassword("Enter password");
 
         try {
 
-          String hash = BCrypt.hashpw(this.prompt.getPassword("Enter password"), this.dbi.getSalt());
-          userId = this.dbi.login(login, hash);
+          userId = this.dbi.login(login, password);
 
           if(userId < 0) {
             System.out.println("Username or Password not valid.");
