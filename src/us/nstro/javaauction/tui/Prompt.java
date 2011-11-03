@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
+ * Get information from the user in a console.
  *
  * @author bbecker
  */
@@ -22,10 +23,19 @@ public class Prompt {
 
     private BufferedReader read;
 
+    /**
+      * Create a new Prompt object.
+      */
     public Prompt() {
         this.read = new BufferedReader(new InputStreamReader(System.in));
     }
-    
+
+    /**
+     * Get a string from the user after a given prompt.
+     * 
+     * @param prompt
+     * @return
+     */
     public String getString(String prompt) {
         System.out.print(prompt + ": ");
         try {
@@ -35,6 +45,14 @@ public class Prompt {
         }
     }
 
+    /**
+     * Get a string from the user after a given prompt without echoing the
+     * data, if the Console is not available (e.g. NetBeans) the getPassword
+     * will use getString instead, and it will show the password.
+     * 
+     * @param prompt
+     * @return
+     */
     public String getPassword(String prompt) {
         char[] passwd;
         Console cons;
@@ -46,6 +64,12 @@ public class Prompt {
         }
     }
 
+    /**
+     * Get an integer from the user after a given prompt.
+     * 
+     * @param prompt
+     * @return
+     */
     public Integer getInteger(String prompt) {
         System.out.print(prompt + ": ");
         try {
@@ -57,6 +81,12 @@ public class Prompt {
         }
     }
 
+    /**
+     * Get a floating point value from the user after a given prompt.
+     * 
+     * @param prompt
+     * @return
+     */
     public Float getFloat(String prompt) {
         System.out.print(prompt + " (e.g. 1.92): ");
         try {
@@ -68,6 +98,13 @@ public class Prompt {
         }
     }
 
+    /**
+     * Get a yes or no value from the user returning it as a boolean, Y
+     * being true and N (or other) being false.
+     * 
+     * @param prompt
+     * @return
+     */
     public Boolean getYesNo(String prompt) {
         System.out.print(prompt + " [Y or N]: ");
         try {
@@ -79,6 +116,12 @@ public class Prompt {
         }
     }
 
+    /**
+     * Get a date from the user.
+     * 
+     * @param prompt
+     * @return
+     */
     public Date getDate(String prompt) {
         try {
             String format = "MM-dd-yyyy";

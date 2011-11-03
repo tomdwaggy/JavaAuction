@@ -251,6 +251,8 @@ public class AuctionMainMenu {
             for(Bid winning : auction.getWinningBids())
                 System.out.print(winning.getUser().getLogin() + " ");
             System.out.println();
+        } else if(auction.getWinningBids().isEmpty()) {
+            System.out.println("No current winner listed.");
         }
 
         System.out.println("Current Valid Bids: " + auction.getValidPrices().toString());
@@ -280,6 +282,7 @@ public class AuctionMainMenu {
                 if(yesno) {
                     auction.placeBid(new Bid(this.userManager.getUserById(this.userId), auction, price));
                     this.dbi.addBid(choice, this.userId, price.cents());
+                    System.out.println("You have bid " + price.toString() + " on auction " + choice + ".");
                 }
             } else {
                 System.out.println("That is not a valid bid for this auction.");

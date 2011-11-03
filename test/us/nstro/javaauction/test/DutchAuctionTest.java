@@ -9,11 +9,11 @@ import org.junit.BeforeClass;
 
 import us.nstro.javaauction.auction.Auction;
 import us.nstro.javaauction.auction.DutchAuctionBuilder;
-import us.nstro.javaauction.auction.User;
 
 import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Item;
 import us.nstro.javaauction.bids.Price;
+import us.nstro.javaauction.db.User;
 
 import us.nstro.javaauction.handler.MockTicker;
 import us.nstro.javaauction.type.SingleValue;
@@ -29,12 +29,19 @@ public class DutchAuctionTest {
     private Auction auction;
     private MockTicker timer;
 
+    private User vera, brian, arven, duke;
+
     public DutchAuctionTest() {
         this.timer = new MockTicker();
         this.builder = new DutchAuctionBuilder();
+
+        this.vera = new User(0, new String[]{"Vera", "Stalks", ""}, "vstalks", false);
+        this.brian = new User(1, new String[]{"Brian", "Becker", ""}, "bbecker", false);
+        this.arven = new User(2, new String[]{"Arven", "Isme", ""}, "aisme", false);
+        this.duke = new User(3, new String[]{"Duke", "Duke", ""}, "dduke", false);
         
         builder.setAuctionName("Big kitty!");
-        builder.setAuctioneer(User.createUser("Vera Stalks"));
+        builder.setAuctioneer(vera);
         builder.setProduct(Item.createItem("An oversized Maine coon"));
         builder.setTicker(this.timer);
         builder.setInitialPrice(new Price(5000));
@@ -57,7 +64,7 @@ public class DutchAuctionTest {
     @Test
     public void testInfo() {
         assertEquals(this.auction.getInfo().getName(), "Big kitty!");
-        assertEquals(this.auction.getInfo().getAuctioneer().getName(), "Vera Stalks");
+        assertEquals(this.auction.getInfo().getAuctioneer().getLogin(), "vstalks");
         assertEquals(this.auction.getInfo().getProducts().size(), 1);
         assertEquals(this.auction.getInfo().getProducts().iterator().next().getName(), "An oversized Maine coon");
     }
@@ -124,7 +131,7 @@ public class DutchAuctionTest {
     @Test
     public void testPlaceStartingBid() {
         this.auction.startAuction();
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(5000)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(5000)));
 
         assertFalse(this.auction.isOpen());
         assertFalse(this.auction.isAborted());
@@ -134,7 +141,7 @@ public class DutchAuctionTest {
     @Test
     public void testPlaceInvalidBid() {
         this.auction.startAuction();
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(4000)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(4000)));
 
         assertTrue(this.auction.isOpen());
         assertFalse(this.auction.isAborted());
@@ -148,7 +155,7 @@ public class DutchAuctionTest {
         for(int i = 0; i < 4; i++)
             this.timer.tick();
         
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(4800)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(4800)));
 
         assertFalse(this.auction.isOpen());
         assertFalse(this.auction.isAborted());
@@ -162,7 +169,7 @@ public class DutchAuctionTest {
         for(int i = 0; i < 95; i++)
             this.timer.tick();
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(500)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(500)));
 
         assertFalse(this.auction.isOpen());
         assertFalse(this.auction.isAborted());

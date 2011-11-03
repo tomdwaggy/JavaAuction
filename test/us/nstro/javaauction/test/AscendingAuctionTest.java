@@ -25,12 +25,19 @@ public class AscendingAuctionTest {
     private AscendingAuctionBuilder builder;
     private Auction auction;
 
+    private User vera, brian, arven, duke;
+
     public AscendingAuctionTest() {
         this.builder = new AscendingAuctionBuilder();
 
+        this.vera = new User(0, new String[]{"Vera", "Stalks", ""}, "vstalks", false);
+        this.brian = new User(1, new String[]{"Brian", "Becker", ""}, "bbecker", false);
+        this.arven = new User(2, new String[]{"Arven", "Isme", ""}, "aisme", false);
+        this.duke = new User(3, new String[]{"Duke", "Duke", ""}, "dduke", false);
+
         builder.setMinimumBid(new Price(5000));
         builder.setAuctionName("Big kitty!");
-        builder.setAuctioneer(User.createUser("Vera Stalks"));
+        builder.setAuctioneer(vera);
         builder.setProduct(Item.createItem("An oversized Maine coon"));
     }
 
@@ -49,7 +56,7 @@ public class AscendingAuctionTest {
     @Test
     public void testInfo() {
         assertEquals(this.auction.getInfo().getName(), "Big kitty!");
-        assertEquals(this.auction.getInfo().getAuctioneer().getLogin(), "Vera Stalks");
+        assertEquals(this.auction.getInfo().getAuctioneer().getLogin(), "vstalks");
         assertEquals(this.auction.getInfo().getProducts().size(), 1);
         assertEquals(this.auction.getInfo().getProducts().iterator().next().getName(), "An oversized Maine coon");
     }
@@ -101,7 +108,7 @@ public class AscendingAuctionTest {
         assertFalse(this.auction.isAborted());
         assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(5000)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(5000)));
         assertFalse(this.auction.getWinningBids().isEmpty());
     }
 
@@ -112,13 +119,13 @@ public class AscendingAuctionTest {
         assertFalse(this.auction.isAborted());
         assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(-100)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(-100)));
         assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(0)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(0)));
         assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(4999)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(4999)));
         assertTrue(this.auction.getWinningBids().isEmpty());
     }
 
@@ -129,18 +136,18 @@ public class AscendingAuctionTest {
         assertFalse(this.auction.isAborted());
         assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(5000)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(5000)));
         assertFalse(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Arven"), this.auction, new Price(5050)));
+        this.auction.placeBid(new Bid(arven, this.auction, new Price(5050)));
         assertFalse(this.auction.getWinningBids().isEmpty());
         assertTrue(this.auction.getWinningBids().iterator().hasNext());
-        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getName(), "Arven" );
+        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getLogin(), "aisme" );
 
-        this.auction.placeBid(new Bid(User.createUser("Duke"), this.auction, new Price(50000)));
+        this.auction.placeBid(new Bid(duke, this.auction, new Price(50000)));
         assertFalse(this.auction.getWinningBids().isEmpty());
         assertTrue(this.auction.getWinningBids().iterator().hasNext());
-        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getName(), "Duke" );
+        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getLogin(), "dduke" );
     }
 
     @Test
@@ -150,20 +157,20 @@ public class AscendingAuctionTest {
         assertFalse(this.auction.isAborted());
         assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(50000)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(50000)));
         assertFalse(this.auction.getWinningBids().isEmpty());
         assertTrue(this.auction.getWinningBids().iterator().hasNext());
-        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getName(), "Brian" );
+        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getLogin(), "bbecker" );
 
-        this.auction.placeBid(new Bid(User.createUser("Arven"), this.auction, new Price(5050)));
+        this.auction.placeBid(new Bid(arven, this.auction, new Price(5050)));
         assertFalse(this.auction.getWinningBids().isEmpty());
         assertTrue(this.auction.getWinningBids().iterator().hasNext());
-        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getName(), "Brian" );
+        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getLogin(), "bbecker" );
 
-        this.auction.placeBid(new Bid(User.createUser("Duke"), this.auction, new Price(49999)));
+        this.auction.placeBid(new Bid(duke, this.auction, new Price(49999)));
         assertFalse(this.auction.getWinningBids().isEmpty());
         assertTrue(this.auction.getWinningBids().iterator().hasNext());
-        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getName(), "Brian" );
+        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getLogin(), "bbecker" );
     }
 
     @Test
@@ -173,7 +180,7 @@ public class AscendingAuctionTest {
         // The valid prices should contain the minimum bid initially.
         //assertTrue(this.auction.getValidPrices().contains(new Price(5000)));
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(50000)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(50000)));
 
         // The valid prices should not contain the minimum bid anymore.
         assertFalse(this.auction.getValidPrices().contains(new Price(5000)));

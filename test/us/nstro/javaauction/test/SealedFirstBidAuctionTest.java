@@ -11,10 +11,10 @@ import us.nstro.javaauction.auction.Auction;
 import us.nstro.javaauction.auction.AuctionBuilder;
 import us.nstro.javaauction.auction.SealedFirstBidAuctionBuilder;
 
-import us.nstro.javaauction.auction.User;
 import us.nstro.javaauction.bids.Bid;
 import us.nstro.javaauction.bids.Item;
 import us.nstro.javaauction.bids.Price;
+import us.nstro.javaauction.db.User;
 
 /**
  * Test the Sealed First Bid Auction.
@@ -23,13 +23,21 @@ import us.nstro.javaauction.bids.Price;
  */
 public class SealedFirstBidAuctionTest {
 
-    private AuctionBuilder builder;
+    private SealedFirstBidAuctionBuilder builder;
     private Auction auction;
 
+    private User vera, brian, arven, duke;
+
     public SealedFirstBidAuctionTest() {
-        this.builder = new SealedFirstBidAuctionBuilder(new Price(5000));
+        this.vera = new User(0, new String[]{"Vera", "Stalks", ""}, "vstalks", false);
+        this.brian = new User(1, new String[]{"Brian", "Becker", ""}, "bbecker", false);
+        this.arven = new User(2, new String[]{"Arven", "Isme", ""}, "aisme", false);
+        this.duke = new User(3, new String[]{"Duke", "Duke", ""}, "dduke", false);
+
+        this.builder = new SealedFirstBidAuctionBuilder();
+        builder.setMinimumBid(new Price(5000));
         builder.setAuctionName("Big kitty!");
-        builder.setAuctioneer(User.createUser("Vera Stalks"));
+        builder.setAuctioneer(vera);
         builder.setProduct(Item.createItem("An oversized Maine coon"));
     }
 
@@ -48,7 +56,7 @@ public class SealedFirstBidAuctionTest {
     @Test
     public void testInfo() {
         assertEquals(this.auction.getInfo().getName(), "Big kitty!");
-        assertEquals(this.auction.getInfo().getAuctioneer().getName(), "Vera Stalks");
+        assertEquals(this.auction.getInfo().getAuctioneer().getLogin(), "vstalks");
         assertEquals(this.auction.getInfo().getProducts().size(), 1);
         assertEquals(this.auction.getInfo().getProducts().iterator().next().getName(), "An oversized Maine coon");
     }
@@ -100,7 +108,10 @@ public class SealedFirstBidAuctionTest {
         assertFalse(this.auction.isAborted());
         assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(5000)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(5000)));
+        assertTrue(this.auction.getWinningBids().isEmpty());
+
+        this.auction.closeAuction();
         assertFalse(this.auction.getWinningBids().isEmpty());
     }
 
@@ -111,13 +122,13 @@ public class SealedFirstBidAuctionTest {
         assertFalse(this.auction.isAborted());
         assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(-100)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(-100)));
         assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(0)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(0)));
         assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(4999)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(4999)));
         assertTrue(this.auction.getWinningBids().isEmpty());
     }
 
@@ -128,18 +139,19 @@ public class SealedFirstBidAuctionTest {
         assertFalse(this.auction.isAborted());
         assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(5000)));
-        assertFalse(this.auction.getWinningBids().isEmpty());
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(5000)));
+        assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Arven"), this.auction, new Price(5050)));
+        this.auction.placeBid(new Bid(arven, this.auction, new Price(5050)));
+        assertTrue(this.auction.getWinningBids().isEmpty());
+
+        this.auction.placeBid(new Bid(duke, this.auction, new Price(50000)));
+        assertTrue(this.auction.getWinningBids().isEmpty());
+        
+        this.auction.closeAuction();
         assertFalse(this.auction.getWinningBids().isEmpty());
         assertTrue(this.auction.getWinningBids().iterator().hasNext());
-        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getName(), "Arven" );
-
-        this.auction.placeBid(new Bid(User.createUser("Duke"), this.auction, new Price(50000)));
-        assertFalse(this.auction.getWinningBids().isEmpty());
-        assertTrue(this.auction.getWinningBids().iterator().hasNext());
-        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getName(), "Duke" );
+        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getLogin(), "dduke" );
     }
 
     @Test
@@ -149,20 +161,19 @@ public class SealedFirstBidAuctionTest {
         assertFalse(this.auction.isAborted());
         assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(50000)));
-        assertFalse(this.auction.getWinningBids().isEmpty());
-        assertTrue(this.auction.getWinningBids().iterator().hasNext());
-        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getName(), "Brian" );
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(50000)));
+        assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Arven"), this.auction, new Price(5050)));
-        assertFalse(this.auction.getWinningBids().isEmpty());
-        assertTrue(this.auction.getWinningBids().iterator().hasNext());
-        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getName(), "Brian" );
+        this.auction.placeBid(new Bid(arven, this.auction, new Price(5050)));
+        assertTrue(this.auction.getWinningBids().isEmpty());
 
-        this.auction.placeBid(new Bid(User.createUser("Duke"), this.auction, new Price(49999)));
+        this.auction.placeBid(new Bid(duke, this.auction, new Price(49999)));
+        assertTrue(this.auction.getWinningBids().isEmpty());
+
+        this.auction.closeAuction();
         assertFalse(this.auction.getWinningBids().isEmpty());
         assertTrue(this.auction.getWinningBids().iterator().hasNext());
-        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getName(), "Brian" );
+        assertEquals(this.auction.getWinningBids().iterator().next().getUser().getLogin(), "bbecker" );
     }
 
     @Test
@@ -172,7 +183,7 @@ public class SealedFirstBidAuctionTest {
         // The valid prices should contain the minimum bid initially.
         assertTrue(this.auction.getValidPrices().contains(new Price(5000)));
 
-        this.auction.placeBid(new Bid(User.createUser("Brian"), this.auction, new Price(50000)));
+        this.auction.placeBid(new Bid(brian, this.auction, new Price(50000)));
 
         // The valid prices should still contain the minimum bid.
         assertTrue(this.auction.getValidPrices().contains(new Price(5000)));
